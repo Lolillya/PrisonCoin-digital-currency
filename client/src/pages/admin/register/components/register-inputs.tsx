@@ -9,7 +9,7 @@ export const RegisterInputs = () => {
           <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
             Full Name
           </label>
-          <Input />
+          <Input placeholder="John Doe"/>
         </div>
 
         <div className="flex flex-col relative group">
