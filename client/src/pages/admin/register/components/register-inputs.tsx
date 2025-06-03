@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { useRegisterSteps } from "@/hooks/register-page/register-page-steps.query";
 import React, { useState } from "react";
+import { CheckIcon } from "@/components/icons/icons";
 
 export const RegisterInputs = () => {
   const { updateStep, steps } = useRegisterSteps();
@@ -16,23 +17,31 @@ export const RegisterInputs = () => {
     updateStep(stepId);
   };
 
-  console.log("Step completed:", steps);
+  const renderCurrentStep = () => {
+    if (steps.step1 && steps.step2 && steps.step3 && steps.step4 && steps.step5) {
+      return <RegisterComplete />;
+    }
+    if (!steps.step1) {
+      return <RegisterStep1 onContinue={(e) => handleContinue(e, 1)} />;
+    }
+    if (!steps.step2) {
+      return <RegisterStep2 onContinue={(e) => handleContinue(e, 2)} />;
+    }
+    if (!steps.step3) {
+      return <RegisterStep3 onContinue={(e) => handleContinue(e, 3)} />;
+    }
+    if (!steps.step4) {
+      return <RegisterStep4 onContinue={(e) => handleContinue(e, 4)} />;
+    }
+    if (!steps.step5) {
+      return <RegisterStep5 onContinue={(e) => handleContinue(e, 5)} />;
+    }
+    return null;
+  };
+
   return (
     <form className="flex-1 flex h-full">
-      {/* STEP 1 */}
-      {/* {!steps.step1 && <RegisterStep1 onContinue={(e) => handleContinue(e, 1)} /> } */}
-
-      {/* STEP 2 */}
-      {/* {!(!steps.step1 && !steps.step1) && <RegisterStep2 onContinue={(e) => handleContinue(e, 2)} />} */}
-
-      {/* STEP 3 */}
-      {/* <RegisterStep3 onContinue={(e) => handleContinue(e, 3)} /> */}
-
-      {/* STEP 4 */}
-      {/* <RegisterStep4 onContinue={(e) => handleContinue(e, 4)} /> */}
-
-      {/* STEP 5 */}
-      <RegisterStep5 onContinue={(e) => handleContinue(e, 5)} />
+      {renderCurrentStep()}
     </form>
   );
 };
@@ -46,7 +55,7 @@ const RegisterStep1 = ({
     <div className="w-full h-full flex m-auto">
       <div className="flex flex-col gap-4 w-full">
         <div className="w-full flex justify-between items-center">
-          <div className="p-4 bg-primary text-text rounded-lg flex items-center gap-1">
+          <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
             <LeftArrowIcon />
             <span>Back</span>
           </div>
@@ -173,6 +182,15 @@ const RegisterStep3 = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScanComplete, setIsScanComplete] = useState(true);
+
+  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isScanComplete) {
+      setIsModalOpen(true);
+    } else {
+      onContinue(e);
+    }
+  };
+
   return (
     <>
       {isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
@@ -203,7 +221,7 @@ const RegisterStep3 = ({
             <p className="text-sm text-text/70 mb-2">
               Start the scanning process below.
             </p>
-            <Button onClick={() => setIsModalOpen(!isModalOpen)}>
+            <Button onClick={handleButtonClick}>
               {isScanComplete ? "Continue" : "Scan Fingerprint"}
             </Button>
           </div>
@@ -325,6 +343,35 @@ const RegisterStep5 = ({
             Confirm Registration
           </Button>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const RegisterComplete = () => {
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center gap-8 py-5">
+      <div className="flex flex-col items-center gap-4">
+        <div className="bg-primary p-6 rounded-full text-white">
+          <CheckIcon />
+        </div>
+        <h2 className="text-3xl font-bold">Registration Complete!</h2>
+        <p className="text-text/70 text-center max-w-md">
+          Thank you for registering. The inmate's account has been created successfully and is now ready to use the system.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-4 w-full max-w-sm">
+        <div className="bg-secondary/20 p-4 rounded-lg">
+          <h3 className="font-semibold mb-2">Next Steps:</h3>
+          <ul className="list-disc list-inside text-text/70 space-y-2">
+            <li>Inmate can now access their account</li>
+            <li>Tokens have been assigned to their wallet</li>
+            <li>Biometric authentication is set up</li>
+          </ul>
+        </div>
+
+        <Button className="w-full">Go to Dashboard</Button>
       </div>
     </div>
   );
