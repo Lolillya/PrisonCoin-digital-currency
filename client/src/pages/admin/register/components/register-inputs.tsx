@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { useRegisterSteps } from "@/hooks/register-page/register-page-steps.query";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export const RegisterInputs = () => {
   const { updateStep, steps } = useRegisterSteps();
@@ -27,9 +27,12 @@ export const RegisterInputs = () => {
 
       {/* STEP 3 */}
       {/* <RegisterStep3 onContinue={(e) => handleContinue(e, 3)} /> */}
-      
+
       {/* STEP 4 */}
-      <RegisterStep4 onContinue={(e) => handleContinue(e, 4)} />
+      {/* <RegisterStep4 onContinue={(e) => handleContinue(e, 4)} /> */}
+
+      {/* STEP 5 */}
+      <RegisterStep5 onContinue={(e) => handleContinue(e, 5)} />
     </form>
   );
 };
@@ -210,7 +213,11 @@ const RegisterStep3 = ({
   );
 };
 
-const RegisterStep4 = ({ onContinue }: { onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void }) => {
+const RegisterStep4 = ({
+  onContinue,
+}: {
+  onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}) => {
   return (
     <div className="flex-1 flex flex-col py-5">
       <div className="flex items-center justify-between">
@@ -219,6 +226,105 @@ const RegisterStep4 = ({ onContinue }: { onContinue: (e: React.MouseEvent<HTMLBu
           <span>Back</span>
         </div>
         <h2>Wallet & Token Assignment</h2>
+      </div>
+
+      <div className="flex flex-col gap-6 mt-8 flex-1">
+        <div className="flex-1 flex flex-col justify-between gap-4">
+          <div className="flex gap-4 items-center">
+            <div className="flex gap-2 items-center">
+              <label className="text-text/70">Status:</label>
+              <span className="px-3 py-1 bg-yellow-500/20 text-yellow-500 rounded-full text-sm">
+                PENDING
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col relative group">
+              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                Wallet Address
+              </label>
+              <Input placeholder="0x..." required />
+            </div>
+
+            <div className="flex flex-col relative group">
+              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                Private Key
+              </label>
+              <Input type="password" placeholder="Enter private key" required />
+            </div>
+
+            <div className="flex gap-4">
+              <div className="flex flex-col relative group w-full">
+                <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                  Initial Token Balance
+                </label>
+                <Input type="number" placeholder="0" required />
+              </div>
+
+              <div className="flex flex-col relative group w-full">
+                <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                  Daily Spending Limit
+                </label>
+                <Input type="number" placeholder="0" required />
+              </div>
+            </div>
+
+            <div className="flex flex-col relative group">
+              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                Transaction Pin
+              </label>
+              <Input
+                type="password"
+                placeholder="Enter 6-digit PIN"
+                maxLength={6}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="mt-auto">
+            <Button type="submit" onClick={onContinue}>
+              Continue
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const RegisterStep5 = ({
+  onContinue,
+}: {
+  onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}) => {
+  return (
+    <div className="flex-1 flex flex-col py-5">
+      <div className="flex items-center justify-between">
+        <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
+          <LeftArrowIcon />
+          <span>Back</span>
+        </div>
+        <h2>Register Confirmation</h2>
+      </div>
+
+      <div className="flex flex-col gap-6 mt-8 flex-1 justify-between">
+        <p className="text-center text-text/70">
+          Please review the information provided before finalizing the
+          registration.
+        </p>
+
+        <div className="overflow-y-auto pr-2">
+          {/* Display summary of all steps here */}
+          
+        </div>
+
+        <div className="mt-4">
+          <Button type="submit" onClick={onContinue}>
+            Confirm Registration
+          </Button>
+        </div>
       </div>
     </div>
   );
