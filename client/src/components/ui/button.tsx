@@ -2,11 +2,17 @@ import type { ReactNode } from "react";
 
 type ButtonProps = {
   children: ReactNode;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 };
 
-export const Button = ({ children }: ButtonProps) => {
+export const Button = ({ children, type = "button", disabled = false }: ButtonProps) => {
   return (
-    <button className="bg-primary text-text p-4 text-lg tracking-wider rounded w-full cursor-pointer hover:bg-secondary transition-colors duration-200 ">
+    <button
+      type={type}
+      className="bg-primary text-text p-4 text-lg tracking-wider rounded w-full cursor-pointer hover:bg-secondary transition-colors duration-200"
+      disabled={disabled}
+    >
       {children}
     </button>
   );
