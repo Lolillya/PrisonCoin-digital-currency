@@ -18,7 +18,13 @@ export const RegisterInputs = () => {
   };
 
   const renderCurrentStep = () => {
-    if (steps.step1 && steps.step2 && steps.step3 && steps.step4 && steps.step5) {
+    if (
+      steps.step1 &&
+      steps.step2 &&
+      steps.step3 &&
+      steps.step4 &&
+      steps.step5
+    ) {
       return <RegisterComplete />;
     }
     if (!steps.step1) {
@@ -39,11 +45,7 @@ export const RegisterInputs = () => {
     return null;
   };
 
-  return (
-    <form className="flex-1 flex h-full">
-      {renderCurrentStep()}
-    </form>
-  );
+  return <form className="flex-1 flex h-full">{renderCurrentStep()}</form>;
 };
 
 const RegisterStep1 = ({
@@ -52,8 +54,9 @@ const RegisterStep1 = ({
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
-    <div className="w-full h-full flex m-auto">
-      <div className="flex flex-col gap-4 w-full">
+    <div className="flex-1 flex mt-4">
+      <div className="flex flex-col gap-4 w-full justify-between">
+        {/* HEADER */}
         <div className="w-full flex justify-between items-center">
           <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
             <LeftArrowIcon />
@@ -61,40 +64,48 @@ const RegisterStep1 = ({
           </div>
           <h2>Personal Information</h2>
         </div>
-        <div className="flex flex-col relative group">
-          <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-            Full Name
-          </label>
-          <Input placeholder="John Doe" required />
-        </div>
 
-        <div className="flex flex-col relative group">
-          <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-            In-mate No. (auto-generated)
-          </label>
-          <Input placeholder="#12345" required />
-        </div>
-
-        <div className="flex flex-col relative group">
-          <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-            Address
-          </label>
-          <Input placeholder="Full Address" required />
-        </div>
-
-        <div className="flex gap-4 w-full">
-          <div className="flex flex-col relative group w-full">
+        <div className="flex flex-col gap-4">
+          {/* inmate fullname */}
+          <div className="flex flex-col relative group">
             <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-              Height
+              Full Name
             </label>
-            <Input placeholder="in inches" required />
+            <Input placeholder="John Doe" required />
           </div>
 
-          <div className="flex flex-col relative group w-full">
+          {/* inmate auto-generated inmate number */}
+          <div className="flex flex-col relative group">
             <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-              Weight
+              In-mate No. (auto-generated)
             </label>
-            <Input placeholder="in kg" required />
+            <Input placeholder="#12345" required />
+          </div>
+
+          {/* inmate address */}
+          <div className="flex flex-col relative group">
+            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+              Address
+            </label>
+            <Input placeholder="Full Address" required />
+          </div>
+
+          {/* inmate height */}
+          <div className="flex gap-4 w-full">
+            <div className="flex flex-col relative group w-full">
+              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                Height
+              </label>
+              <Input placeholder="in inches" required />
+            </div>
+
+            {/* inmate weight */}
+            <div className="flex flex-col relative group w-full">
+              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                Weight
+              </label>
+              <Input placeholder="in kg" required />
+            </div>
           </div>
         </div>
         <div>
@@ -113,58 +124,71 @@ const RegisterStep2 = ({
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
-    <div className="w-full h-full flex m-auto">
-      <div className="flex flex-col gap-4 w-full">
+    <div className="flex-1 flex">
+      <div className="flex flex-col gap-4 w-full justify-between mt-4">
+        {/* HEADER */}
         <div className="w-full flex justify-between items-center">
-          <div className="p-4 bg-primary text-text rounded-lg flex items-center gap-1">
+          <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
             <LeftArrowIcon />
             <span>Back</span>
           </div>
           <h2>Arrest Information</h2>
         </div>
-        <div className="flex flex-col relative group">
-          <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-            Arresting Officer
-          </label>
-          <Input placeholder="John Doe" required />
-        </div>
 
-        <div className="flex gap-4 items-center w-full">
-          <div className="group relative w-full">
+        <div className="flex flex-col gap-4">
+          {/* arresting officer */}
+          <div className="flex flex-col relative group">
             <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-              Arrest Date
+              Arresting Officer
             </label>
-            <Input type="date" className="w-full" required />
+            <Input placeholder="John Doe" required />
           </div>
 
-          <div className="group relative w-full">
+          {/* arrest date */}
+          <div className="flex gap-4 items-center w-full">
+            {/* arrest date in mm/dd/yy */}
+            <div className="group relative w-full">
+              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                Arrest Date
+              </label>
+              <Input type="date" className="w-full" required />
+            </div>
+
+            {/* arrest time */}
+            <div className="group relative w-full">
+              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                Time of Arrest
+              </label>
+              <Input type="time" className="w-full" required />
+            </div>
+          </div>
+
+          {/* arrest location */}
+          <div className="flex flex-col relative group">
             <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-              Time of Arrest
+              Location of Arrest
             </label>
-            <Input type="time" className="w-full" required />
+            <Input placeholder="John Doe" required />
+          </div>
+
+          {/* crime description */}
+          <div className="flex flex-col relative group">
+            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+              Charges / Description of Crime
+            </label>
+            <Input placeholder="John Doe" required />
+          </div>
+
+          {/* inmate image */}
+          <div className="flex flex-col relative group">
+            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+              Image
+            </label>
+            <Input type="file" />
           </div>
         </div>
 
-        <div className="flex flex-col relative group">
-          <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-            Location of Arrest
-          </label>
-          <Input placeholder="John Doe" required />
-        </div>
-
-        <div className="flex flex-col relative group">
-          <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-            Charges / Description of Crime
-          </label>
-          <Input placeholder="John Doe" required />
-        </div>
-
-        <div className="flex flex-col relative group">
-          <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-            Image
-          </label>
-          <Input type="file" />
-        </div>
+        {/* SUBMIT BUTTON */}
         <div>
           <Button type="submit" onClick={onContinue}>
             Continue
@@ -335,7 +359,6 @@ const RegisterStep5 = ({
 
         <div className="overflow-y-auto pr-2">
           {/* Display summary of all steps here */}
-          
         </div>
 
         <div className="mt-4">
@@ -357,7 +380,8 @@ const RegisterComplete = () => {
         </div>
         <h2 className="text-3xl font-bold">Registration Complete!</h2>
         <p className="text-text/70 text-center max-w-md">
-          Thank you for registering. The inmate's account has been created successfully and is now ready to use the system.
+          Thank you for registering. The inmate's account has been created
+          successfully and is now ready to use the system.
         </p>
       </div>
 
