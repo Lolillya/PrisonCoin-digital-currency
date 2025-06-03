@@ -21,9 +21,15 @@ export const RegisterInputs = () => {
     <form className="flex-1 flex h-full">
       {/* STEP 1 */}
       {/* {!steps.step1 && <RegisterStep1 onContinue={(e) => handleContinue(e, 1)} /> } */}
+
       {/* STEP 2 */}
       {/* {!(!steps.step1 && !steps.step1) && <RegisterStep2 onContinue={(e) => handleContinue(e, 2)} />} */}
-      <RegisterStep3 onContinue={(e) => handleContinue(e, 3)} />
+
+      {/* STEP 3 */}
+      {/* <RegisterStep3 onContinue={(e) => handleContinue(e, 3)} /> */}
+      
+      {/* STEP 4 */}
+      <RegisterStep4 onContinue={(e) => handleContinue(e, 4)} />
     </form>
   );
 };
@@ -201,5 +207,19 @@ const RegisterStep3 = ({
         </div>
       </div>
     </>
+  );
+};
+
+const RegisterStep4 = ({ onContinue }: { onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void }) => {
+  return (
+    <div className="flex-1 flex flex-col py-5">
+      <div className="flex items-center justify-between">
+        <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
+          <LeftArrowIcon />
+          <span>Back</span>
+        </div>
+        <h2>Wallet & Token Assignment</h2>
+      </div>
+    </div>
   );
 };
