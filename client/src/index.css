@@ -6,7 +6,7 @@
   --color-secondary: #255f38;
   --color-tertiary: #27391c;
   --color-accent: #18230f;
-  --color-text: #f5f5f5;
+  --color-text: #1d3e22;
   --color-background: #121a0a;
   --color-border: #1a2d18;
 
@@ -40,7 +40,7 @@
 
   /* UI */
   main {
-    @apply flex min-h-screen min-w-screen;
+    @apply flex min-h-screen min-w-screen relative;
   }
   section {
     @apply w-full h-full min-h-dvh max-h-dvh flex px-16 py-10  flex-col overflow-y-hidden;
