@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
   CoinsIcon,
   ExchangeIcon,
@@ -9,26 +10,36 @@ import {
 } from "../icons/icons";
 
 export const Sidebar = () => {
+  const navigate = useNavigate();
   return (
     <section className="w-sm h-screen bg-primary text-white p-4 flex flex-col justify-between">
       {/* TOP PANEL */}
       <div className="flex flex-col gap-4">
-        <div className="sidebar-item">
+        <div
+          className="sidebar-item"
+          onClick={() => navigate("/admin/dashboard/register")}
+        >
           <UserPlusIcon />
           <label>Register</label>
         </div>
 
-        <div className="sidebar-item">
+        <div
+          className="sidebar-item"
+          onClick={() => navigate("/admin/dashboard/check-balance")}
+        >
           <CoinsIcon />
           <label>Check Balance</label>
         </div>
 
-        <div className="sidebar-item">
+        {/* <div className="sidebar-item">
           <HandCoinsIcon />
           <label>Exchange</label>
-        </div>
+        </div> */}
 
-        <div className="sidebar-item">
+        <div
+          className="sidebar-item"
+          onClick={() => navigate("/admin/dashboard/transactions")}
+        >
           <ExchangeIcon />
           <label>Transaction</label>
         </div>
