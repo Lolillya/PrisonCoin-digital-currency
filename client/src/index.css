@@ -40,13 +40,13 @@
 
   /* UI */
   main {
-    @apply flex min-h-screen min-w-screen relative;
+    @apply flex min-h-dvh min-w-dvh relative;
   }
   section {
-    @apply w-full h-full min-h-dvh max-h-dvh flex px-16 py-10  flex-col overflow-y-hidden;
+    @apply flex px-16 py-4  flex-col overflow-y-hidden;
   }
   input {
-    @apply px-4 pb-2 pt-8 rounded-md shadow-md w-full border-tertiary border text-lg tracking-wider;
+    @apply px-4 pb-2 pt-6 rounded-md shadow-md w-full border-tertiary border text-lg tracking-wider;
   }
 
   /* CUSTOM CLASSES */
