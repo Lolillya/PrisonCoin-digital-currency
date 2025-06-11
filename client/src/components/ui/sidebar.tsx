@@ -51,7 +51,7 @@ export const Sidebar = () => {
           <UserIcon />
         </div>
 
-        <div className="flex flex-col gap-1 text-xs text-center">
+        <div className="flex flex-col gap-1 flex-1 text-xs text-center">
           <label>Operator Name</label>
           <label>ADMIN / EMPLOYEE</label>
         </div>
