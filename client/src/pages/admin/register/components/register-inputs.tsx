@@ -68,7 +68,7 @@ const RegisterStep1 = ({
         <div className="flex flex-col gap-4">
           {/* inmate fullname */}
           <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+            <label className="absolute ml-4 text-secondary/70 text-sm mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
               Full Name
             </label>
             <Input placeholder="John Doe" required />
@@ -76,7 +76,7 @@ const RegisterStep1 = ({
 
           {/* inmate auto-generated inmate number */}
           <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
               In-mate No. (auto-generated)
             </label>
             <Input placeholder="#12345" required />
@@ -84,7 +84,7 @@ const RegisterStep1 = ({
 
           {/* inmate address */}
           <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
               Address
             </label>
             <Input placeholder="Full Address" required />
@@ -93,7 +93,7 @@ const RegisterStep1 = ({
           {/* inmate height */}
           <div className="flex gap-4 w-full">
             <div className="flex flex-col relative group w-full">
-              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Height
               </label>
               <Input placeholder="in inches" required />
@@ -101,7 +101,7 @@ const RegisterStep1 = ({
 
             {/* inmate weight */}
             <div className="flex flex-col relative group w-full">
-              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Weight
               </label>
               <Input placeholder="in kg" required />
@@ -218,7 +218,7 @@ const RegisterStep3 = ({
   return (
     <>
       {isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
-      <div className="flex-1 flex flex-col py-5">
+      <div className="flex-1 flex flex-col pt-5">
         <div className="flex items-center justify-between">
           <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
             <LeftArrowIcon />
@@ -230,7 +230,7 @@ const RegisterStep3 = ({
         <div className="flex flex-col gap-4 w-full flex-1 justify-between pt-5">
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="text-white relative group bg-primary flex w-fit p-4 rounded-full shadow-lg">
-              <FingerprintIcon width={200} height={200} />
+              <FingerprintIcon width={150} height={150} />
             </div>
             <h3>Register Inmate fingerprint</h3>
             <p className="text-center text-sm text-text/70 max-w-md mt-2">
@@ -261,7 +261,7 @@ const RegisterStep4 = ({
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
-    <div className="flex-1 flex flex-col py-5">
+    <div className="flex-1 flex flex-col pt-5">
       <div className="flex items-center justify-between">
         <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
           <LeftArrowIcon />
@@ -342,7 +342,7 @@ const RegisterStep5 = ({
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
-    <div className="flex-1 flex flex-col py-5">
+    <div className="flex-1 flex flex-col pt-5">
       <div className="flex items-center justify-between">
         <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
           <LeftArrowIcon />
