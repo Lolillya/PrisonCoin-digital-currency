@@ -50,9 +50,9 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
-            "Microsoft.AspNetCore.OpenApi": {
+            "Nethereum.Web3": {
               "target": "Package",
-              "version": "[9.0.1, )"
+              "version": "[5.0.0, )"
             }
           },
           "imports": [
