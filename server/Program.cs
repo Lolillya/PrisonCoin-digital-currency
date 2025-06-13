@@ -1,8 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// Register controllers — this is required!
+builder.Services.AddControllers();
 
 // Add CORS services
 builder.Services.AddCors(options =>
@@ -19,5 +18,8 @@ var app = builder.Build();
 
 // Enable CORS
 app.UseCors();
+
+// Enable routing and controller mapping
+app.MapControllers();
 
 app.Run();

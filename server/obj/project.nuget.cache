@@ -1,11 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "bLb361ODZ9E=",
+  "dgSpecHash": "S1qe/JvurCksBVnbJD0HkLSnSmG5LEWnxVgEWIPz2v6tn1GRcmPWLqjess7G5LwzDZIc5PgrHHmfw8CoPEwomQ==",
   "success": true,
-  "projectFilePath": "C:\\coder\\myProjects\\eth-prison-coin\\server\\server.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\admin\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.1\\microsoft.aspnetcore.openapi.9.0.1.nupkg.sha512",
-    "C:\\Users\\admin\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
-  ],
+  "projectFilePath": "/home/ir1ya/Projects/blockchain/PrisonCoin-digital-currency/server/server.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }
