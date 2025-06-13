@@ -1,7 +1,7 @@
 {
   "version": 3,
   "targets": {
-    "net9.0": {
+    "net8.0": {
       "ADRaffy.ENSNormalize/0.1.5": {
         "type": "package",
         "compile": {
@@ -61,10 +61,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.ABI.dll": {}
+          "lib/net8.0/Nethereum.ABI.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.ABI.dll": {}
+          "lib/net8.0/Nethereum.ABI.dll": {}
         }
       },
       "Nethereum.Accounts/5.0.0": {
@@ -78,10 +78,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.Accounts.dll": {}
+          "lib/net8.0/Nethereum.Accounts.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.Accounts.dll": {}
+          "lib/net8.0/Nethereum.Accounts.dll": {}
         }
       },
       "Nethereum.BlockchainProcessing/5.0.0": {
@@ -95,10 +95,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.BlockchainProcessing.dll": {}
+          "lib/net8.0/Nethereum.BlockchainProcessing.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.BlockchainProcessing.dll": {}
+          "lib/net8.0/Nethereum.BlockchainProcessing.dll": {}
         }
       },
       "Nethereum.Contracts/5.0.0": {
@@ -112,10 +112,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.Contracts.dll": {}
+          "lib/net8.0/Nethereum.Contracts.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.Contracts.dll": {}
+          "lib/net8.0/Nethereum.Contracts.dll": {}
         }
       },
       "Nethereum.Hex/5.0.0": {
@@ -124,10 +124,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.Hex.dll": {}
+          "lib/net8.0/Nethereum.Hex.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.Hex.dll": {}
+          "lib/net8.0/Nethereum.Hex.dll": {}
         }
       },
       "Nethereum.JsonRpc.Client/5.0.0": {
@@ -138,10 +138,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.JsonRpc.Client.dll": {}
+          "lib/net8.0/Nethereum.JsonRpc.Client.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.JsonRpc.Client.dll": {}
+          "lib/net8.0/Nethereum.JsonRpc.Client.dll": {}
         }
       },
       "Nethereum.JsonRpc.RpcClient/5.0.0": {
@@ -151,10 +151,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.JsonRpc.RpcClient.dll": {}
+          "lib/net8.0/Nethereum.JsonRpc.RpcClient.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.JsonRpc.RpcClient.dll": {}
+          "lib/net8.0/Nethereum.JsonRpc.RpcClient.dll": {}
         }
       },
       "Nethereum.KeyStore/5.0.0": {
@@ -165,10 +165,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.KeyStore.dll": {}
+          "lib/net8.0/Nethereum.KeyStore.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.KeyStore.dll": {}
+          "lib/net8.0/Nethereum.KeyStore.dll": {}
         }
       },
       "Nethereum.Merkle.Patricia/5.0.0": {
@@ -179,10 +179,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.Merkle.Patricia.dll": {}
+          "lib/net8.0/Nethereum.Merkle.Patricia.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.Merkle.Patricia.dll": {}
+          "lib/net8.0/Nethereum.Merkle.Patricia.dll": {}
         }
       },
       "Nethereum.Model/5.0.0": {
@@ -193,10 +193,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.Model.dll": {}
+          "lib/net8.0/Nethereum.Model.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.Model.dll": {}
+          "lib/net8.0/Nethereum.Model.dll": {}
         }
       },
       "Nethereum.RLP/5.0.0": {
@@ -206,10 +206,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.RLP.dll": {}
+          "lib/net8.0/Nethereum.RLP.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.RLP.dll": {}
+          "lib/net8.0/Nethereum.RLP.dll": {}
         }
       },
       "Nethereum.RPC/5.0.0": {
@@ -223,10 +223,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.RPC.dll": {}
+          "lib/net8.0/Nethereum.RPC.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.RPC.dll": {}
+          "lib/net8.0/Nethereum.RPC.dll": {}
         }
       },
       "Nethereum.Signer/5.0.0": {
@@ -241,10 +241,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.Signer.dll": {}
+          "lib/net8.0/Nethereum.Signer.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.Signer.dll": {}
+          "lib/net8.0/Nethereum.Signer.dll": {}
         }
       },
       "Nethereum.Signer.EIP712/5.0.0": {
@@ -257,10 +257,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.Signer.EIP712.dll": {}
+          "lib/net8.0/Nethereum.Signer.EIP712.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.Signer.EIP712.dll": {}
+          "lib/net8.0/Nethereum.Signer.EIP712.dll": {}
         }
       },
       "Nethereum.Util/5.0.0": {
@@ -271,10 +271,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.Util.dll": {}
+          "lib/net8.0/Nethereum.Util.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.Util.dll": {}
+          "lib/net8.0/Nethereum.Util.dll": {}
         }
       },
       "Nethereum.Util.Rest/5.0.0": {
@@ -283,10 +283,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.Util.Rest.dll": {}
+          "lib/net8.0/Nethereum.Util.Rest.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.Util.Rest.dll": {}
+          "lib/net8.0/Nethereum.Util.Rest.dll": {}
         }
       },
       "Nethereum.Web3/5.0.0": {
@@ -305,10 +305,10 @@
           "Newtonsoft.Json": "[11.0.2, 14.0.0)"
         },
         "compile": {
-          "lib/net9.0/Nethereum.Web3.dll": {}
+          "lib/net8.0/Nethereum.Web3.dll": {}
         },
         "runtime": {
-          "lib/net9.0/Nethereum.Web3.dll": {}
+          "lib/net8.0/Nethereum.Web3.dll": {}
         }
       },
       "Newtonsoft.Json/11.0.2": {
@@ -789,7 +789,7 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net9.0": [
+    "net8.0": [
       "Nethereum.Web3 >= 5.0.0"
     ]
   },
@@ -840,8 +840,8 @@
       "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
-      "net9.0": {
-        "targetAlias": "net9.0",
+      "net8.0": {
+        "targetAlias": "net8.0",
         "dependencies": {
           "Nethereum.Web3": {
             "target": "Package",

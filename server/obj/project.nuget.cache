@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Q/+VhOLPRHg=",
+  "dgSpecHash": "+BZh/WMwzB4=",
   "success": true,
   "projectFilePath": "C:\\coder\\myProjects\\eth-prison-coin\\server\\server.csproj",
   "expectedPackageFiles": [
@@ -27,5 +27,12 @@
     "C:\\Users\\admin\\.nuget\\packages\\nethereum.web3\\5.0.0\\nethereum.web3.5.0.0.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file C:\\coder\\myProjects\\eth-prison-coin\\server\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }
