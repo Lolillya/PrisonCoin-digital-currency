@@ -1,12 +1,12 @@
 const DashboardPage = () => {
   return (
-    <section>
+    <section className="section-container">
       {/* TRANSACTION PANEL */}
-      <div>
+      <div className="text-white">
         <h3>Out-going Transactions</h3>
       </div>
 
-      <div>
+      <div className="text-white">
         <h3>In-going Transactions</h3>
       </div>
     </section>
