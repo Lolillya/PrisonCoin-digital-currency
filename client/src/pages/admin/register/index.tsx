@@ -3,7 +3,7 @@ import { RegisterSteps } from "./components/register-steps";
 
 const ResgisterPage = () => {
   return (
-    <section>
+    <section className="section-container">
       <RegisterSteps />
       <RegisterInputs />
     </section>
