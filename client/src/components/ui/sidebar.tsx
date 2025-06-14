@@ -2,21 +2,23 @@ import { useNavigate } from "react-router-dom";
 import {
   CoinsIcon,
   ExchangeIcon,
-  HandCoinsIcon,
-  LogoutIcon,
   MenuIcon,
   UserIcon,
   UserPlusIcon,
 } from "../icons/icons";
+import { EthLogo } from "../icons/eth-logo";
 
 export const Sidebar = () => {
   const navigate = useNavigate();
   return (
-    <section className="w-full max-w-[24rem] bg-primary text-white p-4 flex flex-col justify-between">
+    <section className="w-full max-w-[24rem] my-4 p-4 flex flex-col justify-between">
       {/* TOP PANEL */}
       <div className="flex flex-col gap-4">
+        <div className="w-full justify-center flex">
+          <EthLogo />
+        </div>
         <div
-          className="sidebar-item"
+          className="sidebar-item backdrop-blur-md bg-white/80"
           onClick={() => navigate("/admin/dashboard/register")}
         >
           <UserPlusIcon />
@@ -24,20 +26,20 @@ export const Sidebar = () => {
         </div>
 
         <div
-          className="sidebar-item"
+          className="sidebar-item backdrop-blur-md bg-white/80"
           onClick={() => navigate("/admin/dashboard/check-balance")}
         >
           <CoinsIcon />
           <label>Check Account</label>
         </div>
 
-        {/* <div className="sidebar-item">
+        {/* <div className="sidebar-item backdrop-blur-md bg-white/80">
           <HandCoinsIcon />
           <label>Exchange</label>
         </div> */}
 
         <div
-          className="sidebar-item"
+          className="sidebar-item backdrop-blur-md bg-white/80"
           onClick={() => navigate("/admin/dashboard/transactions")}
         >
           <ExchangeIcon />
@@ -46,7 +48,7 @@ export const Sidebar = () => {
       </div>
 
       {/* BOTTOM PANEL */}
-      <div className="flex items-center bg-secondary p-2 rounded-full gap-4">
+      <div className="flex items-center bg-white/80 p-2 rounded-full gap-4">
         <div className="rounded-full bg-white p-2 text-black">
           <UserIcon />
         </div>

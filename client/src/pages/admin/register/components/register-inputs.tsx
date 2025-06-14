@@ -68,7 +68,7 @@ const RegisterStep1 = ({
         <div className="flex flex-col gap-4">
           {/* inmate fullname */}
           <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-secondary/70 text-sm mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
+            <label className="absolute ml-4 text-white/80 text-sm mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
               Full Name
             </label>
             <Input placeholder="John Doe" required />
@@ -76,7 +76,7 @@ const RegisterStep1 = ({
 
           {/* inmate auto-generated inmate number */}
           <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
+            <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
               In-mate No. (auto-generated)
             </label>
             <Input placeholder="#12345" required />
@@ -84,7 +84,7 @@ const RegisterStep1 = ({
 
           {/* inmate address */}
           <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
+            <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
               Address
             </label>
             <Input placeholder="Full Address" required />
@@ -93,7 +93,7 @@ const RegisterStep1 = ({
           {/* inmate height */}
           <div className="flex gap-4 w-full">
             <div className="flex flex-col relative group w-full">
-              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
+              <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Height
               </label>
               <Input placeholder="in inches" required />
@@ -101,7 +101,7 @@ const RegisterStep1 = ({
 
             {/* inmate weight */}
             <div className="flex flex-col relative group w-full">
-              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
+              <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Weight
               </label>
               <Input placeholder="in kg" required />
@@ -138,7 +138,7 @@ const RegisterStep2 = ({
         <div className="flex flex-col gap-4">
           {/* arresting officer */}
           <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+            <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
               Arresting Officer
             </label>
             <Input placeholder="John Doe" required />
@@ -148,7 +148,7 @@ const RegisterStep2 = ({
           <div className="flex gap-4 items-center w-full">
             {/* arrest date in mm/dd/yy */}
             <div className="group relative w-full">
-              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+              <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                 Arrest Date
               </label>
               <Input type="date" className="w-full" required />
@@ -156,7 +156,7 @@ const RegisterStep2 = ({
 
             {/* arrest time */}
             <div className="group relative w-full">
-              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+              <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                 Time of Arrest
               </label>
               <Input type="time" className="w-full" required />
@@ -165,7 +165,7 @@ const RegisterStep2 = ({
 
           {/* arrest location */}
           <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+            <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
               Location of Arrest
             </label>
             <Input placeholder="John Doe" required />
@@ -173,7 +173,7 @@ const RegisterStep2 = ({
 
           {/* crime description */}
           <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+            <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
               Charges / Description of Crime
             </label>
             <Input placeholder="John Doe" required />
@@ -181,7 +181,7 @@ const RegisterStep2 = ({
 
           {/* inmate image */}
           <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+            <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
               Image
             </label>
             <Input type="file" />
@@ -283,14 +283,14 @@ const RegisterStep4 = ({
 
           <div className="flex flex-col gap-4">
             <div className="flex flex-col relative group">
-              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+              <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                 Wallet Address
               </label>
               <Input placeholder="0x..." required />
             </div>
 
             <div className="flex flex-col relative group">
-              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+              <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                 Private Key
               </label>
               <Input type="password" placeholder="Enter private key" required />
@@ -298,14 +298,14 @@ const RegisterStep4 = ({
 
             <div className="flex gap-4">
               <div className="flex flex-col relative group w-full">
-                <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                   Initial Token Balance
                 </label>
                 <Input type="number" placeholder="0" required />
               </div>
 
               <div className="flex flex-col relative group w-full">
-                <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                   Daily Spending Limit
                 </label>
                 <Input type="number" placeholder="0" required />
@@ -313,7 +313,7 @@ const RegisterStep4 = ({
             </div>
 
             <div className="flex flex-col relative group">
-              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+              <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                 Transaction Pin
               </label>
               <Input
@@ -379,16 +379,16 @@ const RegisterComplete = () => {
           <CheckIcon />
         </div>
         <h2 className="text-3xl font-bold">Registration Complete!</h2>
-        <p className="text-text/70 text-center max-w-md">
+        <p className="text-white/70 text-center max-w-md">
           Thank you for registering. The inmate's account has been created
           successfully and is now ready to use the system.
         </p>
       </div>
 
       <div className="flex flex-col gap-4 w-full max-w-sm">
-        <div className="bg-secondary/20 p-4 rounded-lg">
+        <div className="bg-accent/80 p-4 rounded-lg">
           <h3 className="font-semibold mb-2">Next Steps:</h3>
-          <ul className="list-disc list-inside text-text/70 space-y-2">
+          <ul className="list-disc list-inside text-white/70 space-y-2">
             <li>Inmate can now access their account</li>
             <li>Tokens have been assigned to their wallet</li>
             <li>Biometric authentication is set up</li>

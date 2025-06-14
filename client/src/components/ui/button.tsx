@@ -18,7 +18,7 @@ export const Button = ({
   return (
     <button
       type={type}
-      className={`bg-primary text-white p-4 text-lg tracking-wider rounded w-full cursor-pointer hover:bg-secondary transition-colors duration-200 ${className}`}
+      className={`bg-primary text-white p-4 text-lg tracking-wider rounded-4xl w-full cursor-pointer hover:bg-secondary transition-colors duration-200 ${className}`}
       disabled={disabled}
       onClick={onClick}
     >
