@@ -1,74 +1,102 @@
-import React from "react";
+import { CheckIcon } from "@/components/icons/icons";
+import { useRegisterSteps } from "@/hooks/register-page/register-page-steps.query";
 
 export const RegisterSteps = () => {
-  const [isStep1Complete, setIsStep1Complete] = React.useState(false);
-  const [isStep2Complete, setIsStep2Complete] = React.useState(false);
-  const [isStep3Complete, setIsStep3Complete] = React.useState(false);
-  const [isStep4Complete, setIsStep4Complete] = React.useState(false);
-  const [isStep5Complete, setIsStep5Complete] = React.useState(false);
+  const { steps } = useRegisterSteps();
 
-  const [currentStep, setCurrentStep] = React.useState(1);
-  const steps = [
-    { label: "Register Label 1", isComplete: isStep1Complete },
-    { label: "Register Label 2", isComplete: isStep2Complete },
-    { label: "Register Label 3", isComplete: isStep3Complete },
-    { label: "Register Label 4", isComplete: isStep4Complete },
-    { label: "Register Label 5", isComplete: isStep5Complete },
-  ];
+  /* 
+  DISPLAYS THE STEPS OF A REGISTRATION PROCESS.
+  EACH STEP HAS A LABEL AND A CIRCLE 
+  INDICATING WHETHER IT IS COMPLETE OR NOT. 
+  */
 
   return (
-    /* This is a simple stepper component that displays the steps of a registration process.
-         Each step has a label and a circle indicating whether it is complete or not. */
     <div className="flex items-end">
       {/* STEP 1 */}
       <div className="flex flex-col justify-center items-center gap-1">
-        <label className="text-xs text-center">Register Label</label>
-        <div className="flex justify-center items-center w-5 h-5 bg-primary rounded-full text-white p-5 font-bold">
-          <span>1</span>
+        <label className="text-xs text-center">Personal Information</label>
+        <div
+          className={`flex justify-center items-center  ${
+            steps.step1 ? "bg-primary p-2" : "bg-gray-400 p-5 h-5 w-5"
+          } rounded-full text-white font-bold`}
+        >
+          {steps.step1 ? <CheckIcon /> : <span>1</span>}
         </div>
       </div>
 
       {/* STEP LINE */}
-      <div className="w-full h-1 mb-5 bg-gray-400"></div>
+      <div
+        className={`w-full h-1 mb-5 ${
+          steps.step1 ? "bg-primary" : "bg-gray-400"
+        }`}
+      ></div>
 
       {/* STEP 2 */}
       <div className="flex flex-col justify-center items-center gap-1">
-        <label className="text-xs text-center">Register Label</label>
-        <div className="flex justify-center items-center w-5 h-5 bg-gray-400 rounded-full text-white p-5 font-bold">
-          <span>2</span>
+        <label className="text-xs text-center">Arrest Information</label>
+        <div
+          className={`flex justify-center items-center  ${
+            steps.step2 ? "bg-primary p-2" : "bg-gray-400 p-5 w-5 h-5"
+          } rounded-full text-white font-bold`}
+        >
+          {steps.step2 ? <CheckIcon /> : <span>2</span>}
         </div>
       </div>
 
       {/* STEP LINE */}
-      <div className="w-full h-1 mb-5 bg-gray-400"></div>
+      <div
+        className={`w-full h-1 mb-5 ${
+          steps.step2 ? "bg-primary" : "bg-gray-400"
+        }`}
+      ></div>
 
       {/* STEP 3 */}
       <div className="flex flex-col justify-center items-center gap-1">
-        <label className="text-xs text-center">Register Label</label>
-        <div className="flex justify-center items-center w-5 h-5 bg-gray-400 rounded-full text-white p-5 font-bold">
-          <span>3</span>
+        <label className="text-xs text-center">Biometric Entrollment</label>
+        <div
+          className={`flex justify-center items-center  ${
+            steps.step3 ? "bg-primary p-2" : "bg-gray-400 p-5 w-5 h-5"
+          } rounded-full text-white font-bold`}
+        >
+          {steps.step3 ? <CheckIcon /> : <span>3</span>}
         </div>
       </div>
 
       {/* STEP LINE */}
-      <div className="w-full h-1 mb-5 bg-gray-400"></div>
+      <div
+        className={`w-full h-1 mb-5 ${
+          steps.step3 ? "bg-primary" : "bg-gray-400"
+        }`}
+      ></div>
 
       {/* STEP 4 */}
       <div className="flex flex-col justify-center items-center gap-1">
-        <label className="text-xs text-center">Register Label</label>
-        <div className="flex justify-center items-center w-5 h-5 bg-gray-400 rounded-full text-white p-5 font-bold">
-          <span>4</span>
+        <label className="text-xs text-center">Wallet & Token Assignment</label>
+        <div
+          className={`flex justify-center items-center  ${
+            steps.step4 ? "bg-primary p-2" : "bg-gray-400 p-5 w-5 h-5"
+          } rounded-full text-white font-bold`}
+        >
+          {steps.step4 ? <CheckIcon /> : <span>4</span>}
         </div>
       </div>
 
       {/* STEP LINE */}
-      <div className="w-full h-1 mb-5 bg-gray-400"></div>
+      <div
+        className={`w-full h-1 mb-5 ${
+          steps.step4 ? "bg-primary" : "bg-gray-400"
+        }`}
+      ></div>
 
       {/* STEP 5 */}
       <div className="flex flex-col justify-center items-center gap-1">
-        <label className="text-xs text-center">Register Label</label>
-        <div className="flex justify-center items-center w-5 h-5 bg-gray-400 rounded-full text-white p-5 font-bold">
-          <span>5</span>
+        <label className="text-xs text-center">Register Confirmation</label>
+        <div
+          className={`flex justify-center items-center  ${
+            steps.step5 ? "bg-primary p-2" : "bg-gray-400 p-5 w-5 h-5"
+          } rounded-full text-white font-bold`}
+        >
+          {steps.step5 ? <CheckIcon /> : <span>5</span>}
         </div>
       </div>
     </div>

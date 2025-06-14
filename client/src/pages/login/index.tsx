@@ -1,5 +1,6 @@
 import { Button } from "../../components/ui/button";
 import { EthLogo } from "../../components/icons/eth-logo";
+import { Input } from "@/components/ui/input";
 
 const LoginPage = () => {
   return (
@@ -12,8 +13,19 @@ const LoginPage = () => {
 
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-3 w-full">
-            <input type="text" placeholder="Email" />
-            <input type="password" placeholder="Password" />
+            <div className="group relative">
+              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                Username
+              </label>
+              <Input />
+            </div>
+
+            <div className="group relative">
+              <label className="absolute ml-4 text-secondary/70 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
+                Password
+              </label>
+              <Input />
+            </div>
           </div>
           <Button>Login</Button>
         </div>
