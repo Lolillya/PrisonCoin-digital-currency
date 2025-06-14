@@ -72,3 +72,22 @@ Smart Contract Developer – Solidity, Blockchain Security
 UI/UX Designer – Mobile Interface, Accessibility
 
 Documentation Lead – Research, Paper Writing, Compliance
+
+
+## For Linux server setup
+.Net server
+``
+cd PrisonCoin-digital-currency/server
+dotnet run watch
+``
+
+Ganache server
+``
+ganache --host 0.0.0.0 --port 7545
+``
+
+Deploy Smart Contracts
+``
+cd PrisonCoin-digital-currency/contract
+npx hardhat run scripts/deploy.ts --network localhost
+``

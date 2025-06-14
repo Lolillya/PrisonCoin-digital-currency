@@ -10,7 +10,7 @@ public class InmateController : ControllerBase
 {
     private readonly string _privateKey = "8e520b4fbe726f199d9a12c6bc51ab1ad4227b6b2d13bc67dcbacd2e8f0a63e9"; // no '0x'
     private readonly string _rpcUrl = "http://127.0.0.1:7545";
-    private readonly string _contractAddress = "0xFF7F6211f7950E541b2DAC89b6f11ACD6582E374";
+    private readonly string _contractAddress = "0x0742181909F34713f55aE3aCfF06b50B7C5bDc67";
     private readonly string _abi;
 
     public InmateController()
