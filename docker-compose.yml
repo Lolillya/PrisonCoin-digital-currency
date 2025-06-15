@@ -11,3 +11,13 @@ services:
       - ./server:/app      # So code changes reflect in container
       - ~/.nuget/packages:/root/.nuget/packages:ro
     restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+    restart: unless-stopped
