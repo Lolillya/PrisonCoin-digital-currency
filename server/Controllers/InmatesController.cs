@@ -10,9 +10,9 @@ using server.Models;
 public class InmateController : ControllerBase
 {
     // DEPLOYED CONTRACT ADDRESS 0x60944c759F5E416005F6f88823A924C7d2EEbE6B
-    private readonly string _privateKey = "0x8069158ea891c49f76eb4ed9460aa26c267c127f7f08befde570eb433f38e149"; // no '0x'
+    private readonly string _privateKey = "0x720cf21247c6fca71e659139a4ebcd0c511e86cf4640dab7e025e66ebf8413ff"; // no '0x'
     private readonly string _rpcUrl = "http://host.docker.internal:7545";
-    private readonly string _contractAddress = "0x26e2425022e9325917fA2154E81b9D964ead4a8f";
+    private readonly string _contractAddress = "0x8d82B0404FFC4173CaD1EB229aABc377309cbc3C";
     private readonly string _abi;
 
     private static List<InmateModel> _inmates = new List<InmateModel>();
