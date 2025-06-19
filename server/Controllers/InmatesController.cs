@@ -10,9 +10,9 @@ using server.Models;
 public class InmateController : ControllerBase
 {
     // DEPLOYED CONTRACT ADDRESS 0x60944c759F5E416005F6f88823A924C7d2EEbE6B
-    private readonly string _privateKey = "0x720cf21247c6fca71e659139a4ebcd0c511e86cf4640dab7e025e66ebf8413ff"; // no '0x'
+    private readonly string _privateKey = "0x2b10d32f903dce86854024c25cc758abe338ee520a137311a5357f11883587a1"; // no '0x'
     private readonly string _rpcUrl = "http://host.docker.internal:7545";
-    private readonly string _contractAddress = "0x8d82B0404FFC4173CaD1EB229aABc377309cbc3C";
+    private readonly string _contractAddress = "0xc17FDE2e0d5933fB114eDF3f31bf8011863def58";
     private readonly string _abi;
 
     private static List<InmateModel> _inmates = new List<InmateModel>();
@@ -144,6 +144,27 @@ public class InmateController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+
+    [HttpGet("all-inmates")]
+    public async Task<IActionResult> GetAllInmates()
+    {
+        try
+        {
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+
+            var getInmatesFunction = contract.GetFunction("getAllInmates");
+            var result = await getInmatesFunction.CallAsync<List<string>>();
+
+            return Ok(new { inmates = result });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
 
 
 }
