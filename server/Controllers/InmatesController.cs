@@ -3,15 +3,19 @@ using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using System.IO;
 using System.Threading.Tasks;
+using server.Models;
 
 [ApiController]
 [Route("api/[controller]")]
 public class InmateController : ControllerBase
 {
-    private readonly string _privateKey = "8e520b4fbe726f199d9a12c6bc51ab1ad4227b6b2d13bc67dcbacd2e8f0a63e9"; // no '0x'
+    // DEPLOYED CONTRACT ADDRESS 0x60944c759F5E416005F6f88823A924C7d2EEbE6B
+    private readonly string _privateKey = "0x2b10d32f903dce86854024c25cc758abe338ee520a137311a5357f11883587a1"; // no '0x'
     private readonly string _rpcUrl = "http://host.docker.internal:7545";
-    private readonly string _contractAddress = "0x0742181909F34713f55aE3aCfF06b50B7C5bDc67";
+    private readonly string _contractAddress = "0x718EAD6F0c90F13954eFebC8C8B0c3860365c642";
     private readonly string _abi;
+
+    private static List<InmateModel> _inmates = new List<InmateModel>();
 
     public InmateController()
     {
@@ -55,4 +59,112 @@ public class InmateController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+
+    [HttpPost("exchange")]
+    public async Task<IActionResult> ExchangeTokens([FromBody] ExchangeRequestModel request)
+    {
+        try
+        {
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+
+            var depositFunction = contract.GetFunction("depositTokens");
+
+            var gas = await depositFunction.EstimateGasAsync(account.Address, null, null, request.InmateAddress, request.Amount);
+
+            var transactionHash = await depositFunction.SendTransactionAsync(account.Address, gas, null, null, request.InmateAddress, request.Amount);
+
+            return Ok(new
+            {
+                message = "Tokens deposited successfully.",
+                transactionHash = transactionHash
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("token-balance/{address}")]
+    public async Task<IActionResult> GetTokenBalance(string address)
+    {
+        try
+        {
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+
+            var getBalanceFunction = contract.GetFunction("getBalance");
+            var result = await getBalanceFunction.CallAsync<int>(address);
+
+            return Ok(new { balance = result });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpPost("register-inmate")]
+    public async Task<IActionResult> RegisterInmateFull([FromBody] InmateModel inmate)
+    {
+        try
+        {
+            // On-chain registration
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+            var registerFunction = contract.GetFunction("registerInmate");
+
+            // Check if already registered to avoid duplicate tx (optional enhancement)
+            var isInmateFunction = contract.GetFunction("isInmate");
+            var isRegistered = await isInmateFunction.CallAsync<bool>(inmate.WalletAddress);
+            if (isRegistered)
+            {
+                return BadRequest(new { error = "Inmate already registered on chain." });
+            }
+
+            var gas = await registerFunction.EstimateGasAsync(account.Address, null, null, inmate.WalletAddress);
+            var transactionHash = await registerFunction.SendTransactionAsync(account.Address, gas, null, null, inmate.WalletAddress);
+
+            // Save inmate to in-memory store
+            _inmates.Add(inmate);
+
+            return Ok(new
+            {
+                message = "Inmate registered successfully (on-chain + server).",
+                transactionHash = transactionHash,
+                inmate = inmate
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("all-inmates")]
+    public async Task<IActionResult> GetAllInmates()
+    {
+        try
+        {
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+
+            var getInmatesFunction = contract.GetFunction("getAllInmates");
+            var result = await getInmatesFunction.CallAsync<List<string>>();
+
+            return Ok(new { inmates = result });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+
+
 }
