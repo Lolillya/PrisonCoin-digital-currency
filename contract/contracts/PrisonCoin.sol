@@ -63,4 +63,9 @@ contract PrisonCoin {
     function getBalance(address inmate) external view returns (uint256) {
         return balances[inmate];
     }
+
+    // VIEW ALL REGISTERED INMATES
+    function getAllInmates() external view returns (address[] memory) {
+        return inmateList;
+    }
 }
