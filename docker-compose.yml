@@ -21,3 +21,12 @@ services:
     volumes:
       - ./client:/app
     restart: unless-stopped
+
+  blockchain:
+    build:
+      context: ./contract
+      dockerfile: Dockerfile
+    ports:
+      - "7545:7545"
+    restart: unless-stopped
+
