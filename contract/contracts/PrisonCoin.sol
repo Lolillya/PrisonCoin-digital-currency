@@ -6,6 +6,7 @@ contract PrisonCoin {
 
     mapping(address => bool) public isInmate;
     mapping(address => uint256) public balances;
+    address[] public inmateList;
 
     event InmateRegistered(address indexed inmate);
     event TokensDeposited(address indexed inmate, uint256 amount);
@@ -30,9 +31,10 @@ contract PrisonCoin {
 
     // Step 1: Register inmate in the blockchain
     function registerInmate(address inmate) external onlyOperator {
-        require(!isInmate[inmate], "Already registered");
         isInmate[inmate] = true;
         balances[inmate] = 0;
+        inmateList.push(inmate);
+        emit InmateRegistered(inmate);
         emit InmateRegistered(inmate);
     }
 
@@ -62,5 +64,10 @@ contract PrisonCoin {
     // View balance
     function getBalance(address inmate) external view returns (uint256) {
         return balances[inmate];
+    }
+
+    // VIEW ALL REGISTERED INMATES
+    function getAllInmates() external view returns (address[] memory) {
+        return inmateList;
     }
 }
