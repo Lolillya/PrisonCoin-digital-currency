@@ -3,12 +3,15 @@
 @theme {
   /* COLOR PALETTE */
   --color-primary: #0f1413;
-  --color-secondary: #2b3a37;
-  --color-tertiary: #27391c;
+  --color-secondary: #2e4f3f;
+  --color-tertiary: #d6cbb3;
   --color-accent: #18230f;
-  --color-text: #1d3e22;
-  --color-background: #262626;
-  --color-border: #1a2d18;
+  --color-text: #e6eae7;
+  --color-background: #1a201e;
+  --color-border: #2f3633;
+  --color-highlight: #758d71;
+  --color-alert: #b5533c;
+  --color-success: #bfd8b8;
 
   /* FONT */
   --font-display: "Poppins", sans-serif;
@@ -40,18 +43,18 @@
 
   /* UI */
   main {
-    @apply flex min-h-dvh min-w-dvh relative bg-primary;
+    @apply flex min-h-dvh min-w-dvh relative bg-background;
   }
   section {
     @apply flex px-16 py-4  flex-col overflow-y-hidden flex-1;
   }
   input {
-    @apply px-4 pb-2 pt-6 rounded-md shadow-md w-full border-white/80 border text-lg tracking-wider text-white;
+    @apply px-4 pb-2 pt-6 bg-primary rounded-md shadow-md w-full border-border/80 border text-lg tracking-wider text-text;
   }
 
   /* CUSTOM CLASSES */
   .sidebar-item {
-    @apply flex items-center gap-2 p-3 hover:cursor-pointer bg-secondary rounded-lg active:scale-125 duration-300;
+    @apply flex items-center gap-2 p-3 hover:cursor-pointer rounded-lg active:scale-125 duration-300;
   }
 
   .section-container {
