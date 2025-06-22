@@ -1,16 +1,18 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace server.Models
 {
     public class InmateModel
     {
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
+
         // PERSONAL DETAILS
-        public string FullName { get; set; }
         public string InmateNumber { get; set; }
-        public string WalletAddress { get; set; }
+        public string FullName { get; set; }
+        public string Address { get; set; }
         public decimal Height { get; set; }
         public decimal Weight { get; set; }
 
@@ -23,6 +25,11 @@ namespace server.Models
 
         // BIOMETRIC (FINGER PRINT)
         public string FingerprintHash { get; set; }
+
+        // WALLET
+        public string WalletAddress { get; set; }
+        public int InitialBalance { get; set; }
+        public int DailySpendingLimit { get; set; }
 
     }
 }
