@@ -55,6 +55,17 @@ export const RegisterInputs = () => {
         weight,
       });
     }
+
+    if (stepId === 2) {
+      updateInmateData({
+        ...inmateData,
+        arrestingOfficer,
+        arrestDate,
+        arrestTime: timeOfArrest,
+        arrestLocation,
+        charges,
+      });
+    }
     updateStep(stepId);
   };
 
