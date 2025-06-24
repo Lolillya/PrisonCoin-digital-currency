@@ -26,7 +26,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 var app = builder.Build();
 
 // Enable CORS
-app.UseCors();
+app.UseCors("AllowAll");
 app.MapControllers();
 
 app.Run();
