@@ -365,12 +365,12 @@ const RegisterStep2 = ({
           </div>
 
           {/* inmate image */}
-          <div className="flex flex-col relative group">
+          {/* <div className="flex flex-col relative group">
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
               Image
             </label>
             <Input type="file" />
-          </div>
+          </div> */}
         </div>
 
         {/* SUBMIT BUTTON */}
@@ -390,7 +390,7 @@ const RegisterStep3 = ({
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isScanComplete, setIsScanComplete] = useState(true);
+  const [isScanComplete, setIsScanComplete] = useState(false);
 
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!isScanComplete) {
