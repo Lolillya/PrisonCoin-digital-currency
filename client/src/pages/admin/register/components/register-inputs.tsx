@@ -3,35 +3,100 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { useRegisterSteps } from "@/hooks/register-page/register-page-steps.query";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CheckIcon } from "@/components/icons/icons";
+import { useRegisterPageInmateData } from "@/hooks/register-page/register-page-inmate-data";
 
 export const RegisterInputs = () => {
   const { updateStep, steps } = useRegisterSteps();
+  const { inmateData, updateInmateData } = useRegisterPageInmateData();
 
-  const handleContinue = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    stepId: number
-  ) => {
+  console.log(inmateData);
+
+  // Global state for form fields, initialized from inmateData
+  // STEP 1
+  const [firstName, setFirstName] = useState(inmateData.firstName || "");
+  const [lastName, setLastName] = useState(inmateData.lastName || "");
+  const [inmateNo, setInmateNo] = useState(inmateData.inmateId || "");
+  const [address, setAddress] = useState(inmateData.address || "");
+  const [height, setHeight] = useState(inmateData.height || "");
+  const [weight, setWeight] = useState(inmateData.weight || "");
+
+  // STEP 2
+  const [arrestingOfficer, setArrestingOfficer] = useState(inmateData.arrestingOfficer || "");
+  const [arrestDate, setArrestDate] = useState(inmateData.arrestDate || "");
+  const [timeOfArrest, setTimeOfArrest] = useState(inmateData.arrestTime || "");
+  const [arrestLocation, setArrestLocation] = useState(inmateData.arrestLocation || "");
+  const [charges, setCharges] = useState(inmateData.charges || "");
+
+  6;
+
+  // Optional: keep local state in sync with inmateData if it changes externally
+  // useEffect(() => {
+  //   setFullName(inmateData.fullName || "");
+  //   setInmateNo(inmateData.inmateId || "");
+  //   setAddress(inmateData.address || "");
+  //   setHeight(inmateData.height || "");
+  //   setWeight(inmateData.weight || "");
+  // }, [inmateData]);
+
+  // Global handleContinue
+  const handleContinue = (e: React.MouseEvent<HTMLButtonElement>, stepId: number) => {
     e.preventDefault();
+    // Update global inmateData on continue (for step 1)
+    if (stepId === 1) {
+      updateInmateData({
+        ...inmateData,
+        firstName,
+        lastName,
+        inmateId: inmateNo,
+        address,
+        height,
+        weight,
+      });
+    }
     updateStep(stepId);
   };
 
   const renderCurrentStep = () => {
-    if (
-      steps.step1 &&
-      steps.step2 &&
-      steps.step3 &&
-      steps.step4 &&
-      steps.step5
-    ) {
+    if (steps.step1 && steps.step2 && steps.step3 && steps.step4 && steps.step5) {
       return <RegisterComplete />;
     }
     if (!steps.step1) {
-      return <RegisterStep1 onContinue={(e) => handleContinue(e, 1)} />;
+      return (
+        <RegisterStep1
+          onContinue={(e) => handleContinue(e, 1)}
+          firstName={firstName}
+          setFirstName={setFirstName}
+          lastName={lastName}
+          setLastName={setLastName}
+          inmateNo={inmateNo}
+          setInmateNo={setInmateNo}
+          address={address}
+          setAddress={setAddress}
+          height={height}
+          setHeight={setHeight}
+          weight={weight}
+          setWeight={setWeight}
+        />
+      );
     }
     if (!steps.step2) {
-      return <RegisterStep2 onContinue={(e) => handleContinue(e, 2)} />;
+      return (
+        <RegisterStep2
+          onContinue={(e) => handleContinue(e, 2)}
+          arrestingOfficer={arrestingOfficer}
+          setArrestingOfficer={setArrestingOfficer}
+          arrestDate={arrestDate}
+          setArrestDate={setArrestDate}
+          timeOfArrest={timeOfArrest}
+          setTimeOfArrest={setTimeOfArrest}
+          arrestLocation={arrestLocation}
+          setArrestLocation={setArrestLocation}
+          charges={charges}
+          setCharges={setCharges}
+        />
+      );
     }
     if (!steps.step3) {
       return <RegisterStep3 onContinue={(e) => handleContinue(e, 3)} />;
@@ -50,8 +115,32 @@ export const RegisterInputs = () => {
 
 const RegisterStep1 = ({
   onContinue,
+  firstName,
+  setFirstName,
+  lastName,
+  setLastName,
+  inmateNo,
+  setInmateNo,
+  address,
+  setAddress,
+  height,
+  setHeight,
+  weight,
+  setWeight,
 }: {
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  firstName: string;
+  setFirstName: React.Dispatch<React.SetStateAction<string>>;
+  lastName: string;
+  setLastName: React.Dispatch<React.SetStateAction<string>>;
+  inmateNo: string;
+  setInmateNo: React.Dispatch<React.SetStateAction<string>>;
+  address: string;
+  setAddress: React.Dispatch<React.SetStateAction<string>>;
+  height: string;
+  setHeight: React.Dispatch<React.SetStateAction<string>>;
+  weight: string;
+  setWeight: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   return (
     <div className="flex-1 flex mt-4">
@@ -63,21 +152,34 @@ const RegisterStep1 = ({
             <span>Back</span>
           </div>
 
-          {/* <Button type="button" className="w-f">
-            <LeftArrowIcon />
-            <span>Back</span>
-          </Button> */}
-
           <h2>Personal Information</h2>
         </div>
 
         <div className="flex flex-col gap-4">
           {/* inmate fullname */}
-          <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-white/80 text-sm mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
-              Full Name
-            </label>
-            <Input placeholder="John Doe" required />
+          <div className="flex gap-4 w-full">
+            <div className="flex flex-col relative group w-full">
+              <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
+                Firstname
+              </label>
+              <Input
+                placeholder="John"
+                required
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col relative group w-full">
+              <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
+                Lastname
+              </label>
+              <Input
+                placeholder="Doe"
+                required
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </div>
           </div>
 
           {/* inmate auto-generated inmate number */}
@@ -85,7 +187,13 @@ const RegisterStep1 = ({
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
               In-mate No. (auto-generated)
             </label>
-            <Input placeholder="#12345" required />
+            <Input
+              placeholder="#12345"
+              required
+              value={inmateNo}
+              onChange={(e) => setInmateNo(e.target.value)}
+              disabled // If this should not be editable, keep disabled
+            />
           </div>
 
           {/* inmate address */}
@@ -93,24 +201,37 @@ const RegisterStep1 = ({
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
               Address
             </label>
-            <Input placeholder="Full Address" required />
+            <Input
+              placeholder="Full Address"
+              required
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
           </div>
 
-          {/* inmate height */}
+          {/* inmate height and weight */}
           <div className="flex gap-4 w-full">
             <div className="flex flex-col relative group w-full">
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Height
               </label>
-              <Input placeholder="in inches" required />
+              <Input
+                placeholder="in inches"
+                required
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+              />
             </div>
-
-            {/* inmate weight */}
             <div className="flex flex-col relative group w-full">
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Weight
               </label>
-              <Input placeholder="in kg" required />
+              <Input
+                placeholder="in kg"
+                required
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -126,8 +247,28 @@ const RegisterStep1 = ({
 
 const RegisterStep2 = ({
   onContinue,
+  arrestingOfficer,
+  setArrestingOfficer,
+  arrestDate,
+  setArrestDate,
+  timeOfArrest,
+  setTimeOfArrest,
+  arrestLocation,
+  setArrestLocation,
+  charges,
+  setCharges,
 }: {
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  arrestingOfficer: string;
+  setArrestingOfficer: React.Dispatch<React.SetStateAction<string>>;
+  arrestDate: string;
+  setArrestDate: React.Dispatch<React.SetStateAction<string>>;
+  timeOfArrest: string;
+  setTimeOfArrest: React.Dispatch<React.SetStateAction<string>>;
+  arrestLocation: string;
+  setArrestLocation: React.Dispatch<React.SetStateAction<string>>;
+  charges: string;
+  setCharges: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   return (
     <div className="flex-1 flex">
@@ -147,7 +288,12 @@ const RegisterStep2 = ({
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
               Arresting Officer
             </label>
-            <Input placeholder="John Doe" required />
+            <Input
+              placeholder="John Doe"
+              required
+              value={arrestingOfficer}
+              onChange={(e) => setArrestingOfficer(e.target.value)}
+            />
           </div>
 
           {/* arrest date */}
@@ -157,7 +303,13 @@ const RegisterStep2 = ({
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                 Arrest Date
               </label>
-              <Input type="date" className="w-full" required />
+              <Input
+                type="date"
+                className="w-full"
+                required
+                value={arrestDate}
+                onChange={(e) => setArrestDate(e.target.value)}
+              />
             </div>
 
             {/* arrest time */}
@@ -165,7 +317,13 @@ const RegisterStep2 = ({
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                 Time of Arrest
               </label>
-              <Input type="time" className="w-full" required />
+              <Input
+                type="time"
+                className="w-full"
+                required
+                value={timeOfArrest}
+                onChange={(e) => setTimeOfArrest(e.target.value)}
+              />
             </div>
           </div>
 
@@ -174,7 +332,12 @@ const RegisterStep2 = ({
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
               Location of Arrest
             </label>
-            <Input placeholder="John Doe" required />
+            <Input
+              placeholder="John Doe"
+              required
+              value={arrestLocation}
+              onChange={(e) => setArrestLocation(e.target.value)}
+            />
           </div>
 
           {/* crime description */}
@@ -182,7 +345,12 @@ const RegisterStep2 = ({
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
               Charges / Description of Crime
             </label>
-            <Input placeholder="John Doe" required />
+            <Input
+              placeholder="John Doe"
+              required
+              value={charges}
+              onChange={(e) => setCharges(e.target.value)}
+            />
           </div>
 
           {/* inmate image */}
@@ -240,17 +408,14 @@ const RegisterStep3 = ({
             </div>
             <h3>Register Inmate fingerprint</h3>
             <p className="text-center text-sm text-text/70 max-w-md mt-2">
-              This step securely links the inmate's identity to their digital
-              profile using a biometric fingerprint scan. The fingerprint will
-              be encrypted and stored for future authentication during purchases
-              and transactions.
+              This step securely links the inmate's identity to their digital profile using a
+              biometric fingerprint scan. The fingerprint will be encrypted and stored for future
+              authentication during purchases and transactions.
             </p>
           </div>
 
           <div className="text-center flex flex-col">
-            <p className="text-sm text-text/70 mb-2">
-              Start the scanning process below.
-            </p>
+            <p className="text-sm text-text/70 mb-2">Start the scanning process below.</p>
             <Button onClick={handleButtonClick}>
               {isScanComplete ? "Continue" : "Scan Fingerprint"}
             </Button>
@@ -359,13 +524,10 @@ const RegisterStep5 = ({
 
       <div className="flex flex-col gap-6 mt-8 flex-1 justify-between">
         <p className="text-center text-text/70">
-          Please review the information provided before finalizing the
-          registration.
+          Please review the information provided before finalizing the registration.
         </p>
 
-        <div className="overflow-y-auto pr-2">
-          {/* Display summary of all steps here */}
-        </div>
+        <div className="overflow-y-auto pr-2">{/* Display summary of all steps here */}</div>
 
         <div className="mt-4">
           <Button type="submit" onClick={onContinue}>
@@ -386,8 +548,8 @@ const RegisterComplete = () => {
         </div>
         <h2 className="text-3xl font-bold">Registration Complete!</h2>
         <p className="text-white/70 text-center max-w-md">
-          Thank you for registering. The inmate's account has been created
-          successfully and is now ready to use the system.
+          Thank you for registering. The inmate's account has been created successfully and is now
+          ready to use the system.
         </p>
       </div>
 
