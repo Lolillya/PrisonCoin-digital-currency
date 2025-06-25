@@ -6,6 +6,13 @@ import { useRegisterSteps } from "@/hooks/register-page/register-page-steps.quer
 import React, { useState, useEffect } from "react";
 import { CheckIcon } from "@/components/icons/icons";
 import { useRegisterPageInmateData } from "@/hooks/register-page/register-page-inmate-data";
+import { 
+  registerHardwareFingerprint, 
+  storeHardwareFingerprintTemplate,
+  getHardwareFingerprintTemplate,
+  checkHardwareSupport,
+  HardwareFingerprintTemplate 
+} from "@/utils/hardware-fingerprint-auth";
 
 export const RegisterInputs = () => {
   const { updateStep, steps } = useRegisterSteps();
@@ -412,6 +419,31 @@ const RegisterStep3 = ({
   const [isScanComplete, setIsScanComplete] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
+  const [hardwareSupport, setHardwareSupport] = useState<{
+    supported: boolean;
+    reasons: string[];
+  } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [registeredTemplate, setRegisteredTemplate] = useState<HardwareFingerprintTemplate | null>(null);
+
+  // Check hardware support on component mount
+  useEffect(() => {
+    const checkSupport = async () => {
+      try {
+        const support = await checkHardwareSupport();
+        setHardwareSupport(support);
+        
+        if (!support.supported) {
+          setError("Hardware fingerprint scanner not supported on this device");
+        }
+      } catch (error) {
+        setError("Failed to check hardware support");
+        console.error("Hardware support check failed:", error);
+      }
+    };
+    
+    checkSupport();
+  }, []);
 
   const handleButtonClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!isScanComplete) {
@@ -422,14 +454,20 @@ const RegisterStep3 = ({
   };
 
   const startFingerprintRegistration = async () => {
+    if (!hardwareSupport?.supported) {
+      setError("Hardware fingerprint scanner not supported on this device");
+      return;
+    }
+
     setIsScanning(true);
     setScanProgress(0);
     setIsModalOpen(true);
+    setError(null);
 
     try {
-      console.log("🚀 Starting fingerprint registration process...");
+      console.log("🚀 Starting hardware fingerprint registration process...");
       
-      // Simulate progress updates
+      // Simulate progress updates during the registration process
       const progressInterval = setInterval(() => {
         setScanProgress(prev => {
           if (prev >= 90) {
@@ -440,20 +478,26 @@ const RegisterStep3 = ({
         });
       }, 200);
 
-      // Simulate fingerprint scanning delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Get inmate ID from the current inmate data
+      const inmateId = `INMATE_${Date.now()}`; // You might want to get this from the actual inmate data
+      
+      // Register fingerprint using hardware scanner
+      const template = await registerHardwareFingerprint(inmateId);
+      
+      // Store the template
+      storeHardwareFingerprintTemplate(template);
+      setRegisteredTemplate(template);
+      
+      // Set the fingerprint data to the template ID
+      setFingerprintData(template.id);
       
       clearInterval(progressInterval);
       setScanProgress(100);
-      
-      // Generate a simple fingerprint ID
-      const fingerprintId = `fp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      setFingerprintData(fingerprintId);
-      
       setIsScanComplete(true);
       
-      console.log("🎉 Fingerprint registration completed successfully!");
-      console.log("📋 Fingerprint ID:", fingerprintId);
+      console.log("🎉 Hardware fingerprint registration completed successfully!");
+      console.log("📋 Template ID:", template.id);
+      console.log("📊 Device:", template.deviceInfo.name);
       
       // Close modal after a short delay
       setTimeout(() => {
@@ -462,7 +506,8 @@ const RegisterStep3 = ({
       }, 1500);
       
     } catch (error) {
-      console.error("❌ Fingerprint registration failed:", error);
+      console.error("❌ Hardware fingerprint registration failed:", error);
+      setError(error instanceof Error ? error.message : "Fingerprint registration failed");
       setIsScanning(false);
       setIsModalOpen(false);
     }
@@ -534,15 +579,53 @@ const RegisterStep3 = ({
             </div>
             <h3>Register Inmate Fingerprint</h3>
             <p className="text-center text-sm text-text/70 max-w-md mt-2">
-              This step registers the inmate's fingerprint for identification purposes.
-              The fingerprint data will be stored securely for future reference.
+              This step registers the inmate's fingerprint using the hardware scanner for secure identification.
+              The fingerprint data will be stored securely for future authentication.
             </p>
             
-            {fingerprintData && isScanComplete && (
+            {/* Hardware Support Status */}
+            {hardwareSupport && (
+              <div className={`p-4 rounded-lg max-w-md w-full ${
+                hardwareSupport.supported 
+                  ? 'bg-green-500/20 border border-green-500/30' 
+                  : 'bg-red-500/20 border border-red-500/30'
+              }`}>
+                <h4 className={`font-semibold mb-2 ${
+                  hardwareSupport.supported ? 'text-green-500' : 'text-red-500'
+                }`}>
+                  {hardwareSupport.supported ? '✓ Hardware Scanner Available' : '✗ Hardware Scanner Not Available'}
+                </h4>
+                <div className="text-xs text-text/70 space-y-1">
+                  {hardwareSupport.supported ? (
+                    <p>Your device supports hardware fingerprint scanning.</p>
+                  ) : (
+                    <div>
+                      <p>Hardware fingerprint scanning is not supported:</p>
+                      <ul className="list-disc list-inside mt-1">
+                        {hardwareSupport.reasons.map((reason, index) => (
+                          <li key={index}>{reason}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Error Display */}
+            {error && (
+              <div className="bg-red-500/20 p-4 rounded-lg max-w-md w-full border border-red-500/30">
+                <h4 className="font-semibold mb-2 text-red-500">✗ Registration Error</h4>
+                <p className="text-xs text-text/70">{error}</p>
+              </div>
+            )}
+            
+            {fingerprintData && isScanComplete && registeredTemplate && (
               <div className="bg-accent/20 p-4 rounded-lg max-w-md w-full">
                 <h4 className="font-semibold mb-2 text-green-500">✓ Registration Complete</h4>
                 <div className="text-xs text-text/70 space-y-1">
-                  <p><strong>Fingerprint ID:</strong> {fingerprintData}</p>
+                  <p><strong>Template ID:</strong> {fingerprintData}</p>
+                  <p><strong>Device:</strong> {registeredTemplate.deviceInfo.name}</p>
                   <p><strong>Status:</strong> Registered</p>
                   <p><strong>Timestamp:</strong> {new Date().toLocaleString()}</p>
                 </div>
@@ -553,20 +636,22 @@ const RegisterStep3 = ({
           <div className="text-center flex flex-col">
             <p className="text-sm text-text/70 mb-2">
               {isScanComplete 
-                ? "Fingerprint has been registered successfully. You can now continue."
-                : "Start the scanning process below."
+                ? "Fingerprint has been registered successfully using hardware scanner. You can now continue."
+                : "Start the hardware fingerprint scanning process below."
               }
             </p>
             <Button 
               onClick={handleButtonClick}
-              disabled={isScanning}
+              disabled={isScanning || !hardwareSupport?.supported}
               className={isScanComplete ? 'bg-green-500 hover:bg-green-600' : ''}
             >
               {isScanning 
                 ? "Scanning..." 
                 : isScanComplete 
                   ? "Continue" 
-                  : "Scan Fingerprint"
+                  : !hardwareSupport?.supported
+                    ? "Hardware Not Supported"
+                    : "Scan Fingerprint"
               }
             </Button>
           </div>
