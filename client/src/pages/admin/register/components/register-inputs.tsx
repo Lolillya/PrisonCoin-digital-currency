@@ -6,16 +6,16 @@ import { useRegisterSteps } from "@/hooks/register-page/register-page-steps.quer
 import React, { useState, useEffect } from "react";
 import { CheckIcon } from "@/components/icons/icons";
 import { useRegisterPageInmateData } from "@/hooks/register-page/register-page-inmate-data";
-import { 
-  registerHardwareFingerprint, 
+import {
+  registerHardwareFingerprint,
   storeHardwareFingerprintTemplate,
   getHardwareFingerprintTemplate,
   checkHardwareSupport,
-  HardwareFingerprintTemplate 
+  HardwareFingerprintTemplate,
 } from "@/utils/hardware-fingerprint-auth";
 
 export const RegisterInputs = () => {
-  const { updateStep, steps } = useRegisterSteps();
+  const { updateStep, steps, setStep } = useRegisterSteps();
   const { inmateData, updateInmateData } = useRegisterPageInmateData();
 
   console.log(inmateData);
@@ -38,6 +38,9 @@ export const RegisterInputs = () => {
 
   // STEP 3
   const [fingerprintData, setFingerprintData] = useState(inmateData.fingerprintData || "");
+
+  // STEP 4
+  const [walletAddress, setWalletAddress] = useState(inmateData.walletAddress || "");
 
   // Optional: keep local state in sync with inmateData if it changes externally
   // useEffect(() => {
@@ -82,7 +85,20 @@ export const RegisterInputs = () => {
       });
     }
 
+    if (stepId === 4) {
+      updateInmateData({
+        ...inmateData,
+        walletAddress: walletAddress,
+      });
+    }
+
     updateStep(stepId);
+  };
+
+  // Global handleBack
+  const handleBack = (stepId: number) => {
+    // Set current step to false to go back to previous step
+    setStep(stepId, false);
   };
 
   const renderCurrentStep = () => {
@@ -93,6 +109,7 @@ export const RegisterInputs = () => {
       return (
         <RegisterStep1
           onContinue={(e) => handleContinue(e, 1)}
+          onBack={() => handleBack(1)}
           firstName={firstName}
           setFirstName={setFirstName}
           lastName={lastName}
@@ -112,6 +129,7 @@ export const RegisterInputs = () => {
       return (
         <RegisterStep2
           onContinue={(e) => handleContinue(e, 2)}
+          onBack={() => handleBack(2)}
           arrestingOfficer={arrestingOfficer}
           setArrestingOfficer={setArrestingOfficer}
           arrestDate={arrestDate}
@@ -127,18 +145,26 @@ export const RegisterInputs = () => {
     }
     if (!steps.step3) {
       return (
-        <RegisterStep3 
+        <RegisterStep3
           onContinue={(e) => handleContinue(e, 3)}
+          onBack={() => handleBack(3)}
           fingerprintData={fingerprintData}
           setFingerprintData={setFingerprintData}
         />
       );
     }
     if (!steps.step4) {
-      return <RegisterStep4 onContinue={(e) => handleContinue(e, 4)} />;
+      return (
+        <RegisterStep4
+          onContinue={(e) => handleContinue(e, 4)}
+          onBack={() => handleBack(4)}
+          walletAddress={walletAddress}
+          setWalletAddress={setWalletAddress}
+        />
+      );
     }
     if (!steps.step5) {
-      return <RegisterStep5 onContinue={(e) => handleContinue(e, 5)} />;
+      return <RegisterStep5 onContinue={(e) => handleContinue(e, 5)} onBack={() => handleBack(5)} />;
     }
     return null;
   };
@@ -148,6 +174,7 @@ export const RegisterInputs = () => {
 
 const RegisterStep1 = ({
   onContinue,
+  onBack,
   firstName,
   setFirstName,
   lastName,
@@ -162,6 +189,7 @@ const RegisterStep1 = ({
   setWeight,
 }: {
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onBack: () => void;
   firstName: string;
   setFirstName: React.Dispatch<React.SetStateAction<string>>;
   lastName: string;
@@ -180,7 +208,7 @@ const RegisterStep1 = ({
       <div className="flex flex-col gap-4 w-full justify-between">
         {/* HEADER */}
         <div className="w-full flex justify-between items-center">
-          <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
+          <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1" onClick={onBack}>
             <LeftArrowIcon />
             <span>Back</span>
           </div>
@@ -195,23 +223,13 @@ const RegisterStep1 = ({
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Firstname
               </label>
-              <Input
-                placeholder="John"
-                required
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
+              <Input placeholder="John" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
             </div>
             <div className="flex flex-col relative group w-full">
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Lastname
               </label>
-              <Input
-                placeholder="Doe"
-                required
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
+              <Input placeholder="Doe" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
             </div>
           </div>
 
@@ -234,12 +252,7 @@ const RegisterStep1 = ({
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
               Address
             </label>
-            <Input
-              placeholder="Full Address"
-              required
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
+            <Input placeholder="Full Address" required value={address} onChange={(e) => setAddress(e.target.value)} />
           </div>
 
           {/* inmate height and weight */}
@@ -248,23 +261,13 @@ const RegisterStep1 = ({
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Height
               </label>
-              <Input
-                placeholder="in inches"
-                required
-                value={height}
-                onChange={(e) => setHeight(e.target.value)}
-              />
+              <Input placeholder="in inches" required value={height} onChange={(e) => setHeight(e.target.value)} />
             </div>
             <div className="flex flex-col relative group w-full">
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Weight
               </label>
-              <Input
-                placeholder="in kg"
-                required
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-              />
+              <Input placeholder="in kg" required value={weight} onChange={(e) => setWeight(e.target.value)} />
             </div>
           </div>
         </div>
@@ -280,6 +283,7 @@ const RegisterStep1 = ({
 
 const RegisterStep2 = ({
   onContinue,
+  onBack,
   arrestingOfficer,
   setArrestingOfficer,
   arrestDate,
@@ -292,6 +296,7 @@ const RegisterStep2 = ({
   setCharges,
 }: {
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onBack: () => void;
   arrestingOfficer: string;
   setArrestingOfficer: React.Dispatch<React.SetStateAction<string>>;
   arrestDate: string;
@@ -308,10 +313,14 @@ const RegisterStep2 = ({
       <div className="flex flex-col gap-4 w-full justify-between mt-4">
         {/* HEADER */}
         <div className="w-full flex justify-between items-center">
-          <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
+          <button
+            type="button"
+            onClick={onBack}
+            className="p-4 bg-primary text-white rounded-lg flex items-center gap-1 hover:bg-primary/80 transition-colors"
+          >
             <LeftArrowIcon />
             <span>Back</span>
-          </div>
+          </button>
           <h2>Arrest Information</h2>
         </div>
 
@@ -378,12 +387,7 @@ const RegisterStep2 = ({
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
               Charges / Description of Crime
             </label>
-            <Input
-              placeholder="John Doe"
-              required
-              value={charges}
-              onChange={(e) => setCharges(e.target.value)}
-            />
+            <Input placeholder="John Doe" required value={charges} onChange={(e) => setCharges(e.target.value)} />
           </div>
 
           {/* inmate image */}
@@ -408,10 +412,12 @@ const RegisterStep2 = ({
 
 const RegisterStep3 = ({
   onContinue,
+  onBack,
   fingerprintData,
   setFingerprintData,
 }: {
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onBack: () => void;
   fingerprintData: string;
   setFingerprintData: React.Dispatch<React.SetStateAction<string>>;
 }) => {
@@ -432,7 +438,7 @@ const RegisterStep3 = ({
       try {
         const support = await checkHardwareSupport();
         setHardwareSupport(support);
-        
+
         if (!support.supported) {
           setError("Hardware fingerprint scanner not supported on this device");
         }
@@ -441,7 +447,7 @@ const RegisterStep3 = ({
         console.error("Hardware support check failed:", error);
       }
     };
-    
+
     checkSupport();
   }, []);
 
@@ -466,10 +472,10 @@ const RegisterStep3 = ({
 
     try {
       console.log("🚀 Starting hardware fingerprint registration process...");
-      
+
       // Simulate progress updates during the registration process
       const progressInterval = setInterval(() => {
-        setScanProgress(prev => {
+        setScanProgress((prev) => {
           if (prev >= 90) {
             clearInterval(progressInterval);
             return 90;
@@ -480,31 +486,30 @@ const RegisterStep3 = ({
 
       // Get inmate ID from the current inmate data
       const inmateId = `INMATE_${Date.now()}`; // You might want to get this from the actual inmate data
-      
+
       // Register fingerprint using hardware scanner
       const template = await registerHardwareFingerprint(inmateId);
-      
+
       // Store the template
       storeHardwareFingerprintTemplate(template);
       setRegisteredTemplate(template);
-      
+
       // Set the fingerprint data to the template ID
       setFingerprintData(template.id);
-      
+
       clearInterval(progressInterval);
       setScanProgress(100);
       setIsScanComplete(true);
-      
+
       console.log("🎉 Hardware fingerprint registration completed successfully!");
       console.log("📋 Template ID:", template.id);
       console.log("📊 Device:", template.deviceInfo.name);
-      
+
       // Close modal after a short delay
       setTimeout(() => {
         setIsModalOpen(false);
         setIsScanning(false);
       }, 1500);
-      
     } catch (error) {
       console.error("❌ Hardware fingerprint registration failed:", error);
       setError(error instanceof Error ? error.message : "Fingerprint registration failed");
@@ -530,16 +535,15 @@ const RegisterStep3 = ({
                       {scanProgress < 100 ? "Scanning Fingerprint..." : "Processing..."}
                     </h3>
                     <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-                      <div 
+                      <div
                         className="bg-primary h-2 rounded-full transition-all duration-300"
                         style={{ width: `${scanProgress}%` }}
                       ></div>
                     </div>
                     <p className="text-sm text-gray-600">
-                      {scanProgress < 100 
+                      {scanProgress < 100
                         ? "Please place your finger on the scanner and hold still..."
-                        : "Processing fingerprint data..."
-                      }
+                        : "Processing fingerprint data..."}
                     </p>
                   </>
                 ) : (
@@ -547,12 +551,8 @@ const RegisterStep3 = ({
                     <div className="mb-4">
                       <CheckIcon />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2 text-green-600">
-                      Fingerprint Registered Successfully!
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Your fingerprint has been registered successfully.
-                    </p>
+                    <h3 className="text-lg font-semibold mb-2 text-green-600">Fingerprint Registered Successfully!</h3>
+                    <p className="text-sm text-gray-600">Your fingerprint has been registered successfully.</p>
                   </>
                 )}
               </div>
@@ -560,40 +560,46 @@ const RegisterStep3 = ({
           </div>
         </div>
       )}
-      
+
       <div className="flex-1 flex flex-col pt-5">
         <div className="flex items-center justify-between">
-          <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
+          <button
+            type="button"
+            onClick={onBack}
+            className="p-4 bg-primary text-white rounded-lg flex items-center gap-1 hover:bg-primary/80 transition-colors"
+          >
             <LeftArrowIcon />
             <span>Back</span>
-          </div>
+          </button>
           <h2>Biometric Enrollment</h2>
         </div>
 
         <div className="flex flex-col gap-4 w-full flex-1 justify-between pt-5">
           <div className="flex flex-col items-center justify-center gap-4">
-            <div className={`text-white relative group flex w-fit p-4 rounded-full shadow-lg transition-all duration-300 ${
-              isScanComplete ? 'bg-green-500' : 'bg-primary'
-            }`}>
+            <div
+              className={`text-white relative group flex w-fit p-4 rounded-full shadow-lg transition-all duration-300 ${
+                isScanComplete ? "bg-green-500" : "bg-primary"
+              }`}
+            >
               <FingerprintIcon width={150} height={150} />
             </div>
             <h3>Register Inmate Fingerprint</h3>
             <p className="text-center text-sm text-text/70 max-w-md mt-2">
-              This step registers the inmate's fingerprint using the hardware scanner for secure identification.
-              The fingerprint data will be stored securely for future authentication.
+              This step registers the inmate's fingerprint using the hardware scanner for secure identification. The
+              fingerprint data will be stored securely for future authentication.
             </p>
-            
+
             {/* Hardware Support Status */}
             {hardwareSupport && (
-              <div className={`p-4 rounded-lg max-w-md w-full ${
-                hardwareSupport.supported 
-                  ? 'bg-green-500/20 border border-green-500/30' 
-                  : 'bg-red-500/20 border border-red-500/30'
-              }`}>
-                <h4 className={`font-semibold mb-2 ${
-                  hardwareSupport.supported ? 'text-green-500' : 'text-red-500'
-                }`}>
-                  {hardwareSupport.supported ? '✓ Hardware Scanner Available' : '✗ Hardware Scanner Not Available'}
+              <div
+                className={`p-4 rounded-lg max-w-md w-full ${
+                  hardwareSupport.supported
+                    ? "bg-green-500/20 border border-green-500/30"
+                    : "bg-red-500/20 border border-red-500/30"
+                }`}
+              >
+                <h4 className={`font-semibold mb-2 ${hardwareSupport.supported ? "text-green-500" : "text-red-500"}`}>
+                  {hardwareSupport.supported ? "✓ Hardware Scanner Available" : "✗ Hardware Scanner Not Available"}
                 </h4>
                 <div className="text-xs text-text/70 space-y-1">
                   {hardwareSupport.supported ? (
@@ -611,7 +617,7 @@ const RegisterStep3 = ({
                 </div>
               </div>
             )}
-            
+
             {/* Error Display */}
             {error && (
               <div className="bg-red-500/20 p-4 rounded-lg max-w-md w-full border border-red-500/30">
@@ -619,15 +625,23 @@ const RegisterStep3 = ({
                 <p className="text-xs text-text/70">{error}</p>
               </div>
             )}
-            
+
             {fingerprintData && isScanComplete && registeredTemplate && (
               <div className="bg-accent/20 p-4 rounded-lg max-w-md w-full">
                 <h4 className="font-semibold mb-2 text-green-500">✓ Registration Complete</h4>
                 <div className="text-xs text-text/70 space-y-1">
-                  <p><strong>Template ID:</strong> {fingerprintData}</p>
-                  <p><strong>Device:</strong> {registeredTemplate.deviceInfo.name}</p>
-                  <p><strong>Status:</strong> Registered</p>
-                  <p><strong>Timestamp:</strong> {new Date().toLocaleString()}</p>
+                  <p>
+                    <strong>Template ID:</strong> {fingerprintData}
+                  </p>
+                  <p>
+                    <strong>Device:</strong> {registeredTemplate.deviceInfo.name}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> Registered
+                  </p>
+                  <p>
+                    <strong>Timestamp:</strong> {new Date().toLocaleString()}
+                  </p>
                 </div>
               </div>
             )}
@@ -635,24 +649,22 @@ const RegisterStep3 = ({
 
           <div className="text-center flex flex-col">
             <p className="text-sm text-text/70 mb-2">
-              {isScanComplete 
+              {isScanComplete
                 ? "Fingerprint has been registered successfully using hardware scanner. You can now continue."
-                : "Start the hardware fingerprint scanning process below."
-              }
+                : "Start the hardware fingerprint scanning process below."}
             </p>
-            <Button 
+            <Button
               onClick={handleButtonClick}
               disabled={isScanning || !hardwareSupport?.supported}
-              className={isScanComplete ? 'bg-green-500 hover:bg-green-600' : ''}
+              className={isScanComplete ? "bg-green-500 hover:bg-green-600" : ""}
             >
-              {isScanning 
-                ? "Scanning..." 
-                : isScanComplete 
-                  ? "Continue" 
-                  : !hardwareSupport?.supported
-                    ? "Hardware Not Supported"
-                    : "Scan Fingerprint"
-              }
+              {isScanning
+                ? "Scanning..."
+                : isScanComplete
+                ? "Continue"
+                : !hardwareSupport?.supported
+                ? "Hardware Not Supported"
+                : "Scan Fingerprint"}
             </Button>
           </div>
         </div>
@@ -663,16 +675,26 @@ const RegisterStep3 = ({
 
 const RegisterStep4 = ({
   onContinue,
+  onBack,
+  walletAddress,
+  setWalletAddress,
 }: {
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onBack: () => void;
+  walletAddress: string;
+  setWalletAddress: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   return (
     <div className="flex-1 flex flex-col pt-5">
       <div className="flex items-center justify-between">
-        <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
+        <button
+          type="button"
+          onClick={onBack}
+          className="p-4 bg-primary text-white rounded-lg flex items-center gap-1 hover:bg-primary/80 transition-colors"
+        >
           <LeftArrowIcon />
           <span>Back</span>
-        </div>
+        </button>
         <h2>Wallet & Token Assignment</h2>
       </div>
 
@@ -681,9 +703,7 @@ const RegisterStep4 = ({
           <div className="flex gap-4 items-center">
             <div className="flex gap-2 items-center">
               <label className="text-text/70">Status:</label>
-              <span className="px-3 py-1 bg-yellow-500/20 text-yellow-500 rounded-full text-sm">
-                PENDING
-              </span>
+              <span className="px-3 py-1 bg-yellow-500/20 text-yellow-500 rounded-full text-sm">PENDING</span>
             </div>
           </div>
 
@@ -692,7 +712,12 @@ const RegisterStep4 = ({
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                 Wallet Address
               </label>
-              <Input placeholder="0x..." required />
+              <Input
+                placeholder="0x..."
+                required
+                value={walletAddress}
+                onChange={(e) => setWalletAddress(e.target.value)}
+              />
             </div>
 
             {/* <div className="flex flex-col relative group">
@@ -744,16 +769,22 @@ const RegisterStep4 = ({
 
 const RegisterStep5 = ({
   onContinue,
+  onBack,
 }: {
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onBack: () => void;
 }) => {
   return (
     <div className="flex-1 flex flex-col pt-5">
       <div className="flex items-center justify-between">
-        <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
+        <button
+          type="button"
+          onClick={onBack}
+          className="p-4 bg-primary text-white rounded-lg flex items-center gap-1 hover:bg-primary/80 transition-colors"
+        >
           <LeftArrowIcon />
           <span>Back</span>
-        </div>
+        </button>
         <h2>Register Confirmation</h2>
       </div>
 
@@ -783,8 +814,8 @@ const RegisterComplete = () => {
         </div>
         <h2 className="text-3xl font-bold">Registration Complete!</h2>
         <p className="text-white/70 text-center max-w-md">
-          Thank you for registering. The inmate's account has been created successfully and is now
-          ready to use the system.
+          Thank you for registering. The inmate's account has been created successfully and is now ready to use the
+          system.
         </p>
       </div>
 

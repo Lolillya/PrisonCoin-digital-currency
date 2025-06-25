@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface initialData {
   // STEP 1
@@ -56,18 +56,52 @@ const initialData: initialData = {
   isValidated: false,
 };
 
+// Helper functions for localStorage
+const getStoredInmateData = (): initialData => {
+  try {
+    const stored = localStorage.getItem("registerInmateData");
+    return stored ? JSON.parse(stored) : initialData;
+  } catch (error) {
+    console.error("Error reading inmate data from localStorage:", error);
+    return initialData;
+  }
+};
+
+const setStoredInmateData = (data: initialData): void => {
+  try {
+    localStorage.setItem("registerInmateData", JSON.stringify(data));
+  } catch (error) {
+    console.error("Error writing inmate data to localStorage:", error);
+  }
+};
+
 export const useRegisterPageInmateData = () => {
-  const [inmateData, setInmateData] = useState<initialData>(initialData);
+  const [inmateData, setInmateData] = useState<initialData>(getStoredInmateData());
+
+  // Load data from localStorage on mount
+  useEffect(() => {
+    const storedData = getStoredInmateData();
+    setInmateData(storedData);
+  }, []);
 
   const updateInmateData = (newData: Partial<initialData>) => {
-    setInmateData((prevData) => ({
-      ...prevData,
+    const updatedData = {
+      ...inmateData,
       ...newData,
-    }));
+    };
+    setInmateData(updatedData);
+    setStoredInmateData(updatedData);
+  };
+
+  // Function to reset inmate data (useful for starting over)
+  const resetInmateData = () => {
+    setInmateData(initialData);
+    setStoredInmateData(initialData);
   };
 
   return {
     inmateData,
     updateInmateData,
+    resetInmateData,
   };
 };
