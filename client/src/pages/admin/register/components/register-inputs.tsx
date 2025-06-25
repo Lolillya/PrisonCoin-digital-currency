@@ -6,6 +6,17 @@ import { useRegisterSteps } from "@/hooks/register-page/register-page-steps.quer
 import React, { useState, useEffect } from "react";
 import { CheckIcon } from "@/components/icons/icons";
 import { useRegisterPageInmateData } from "@/hooks/register-page/register-page-inmate-data";
+import { 
+  registerFingerprint, 
+  storeFingerprintTemplate, 
+  FingerprintTemplate 
+} from "@/utils/fingerprint-auth";
+import { 
+  registerHardwareFingerprint, 
+  storeHardwareFingerprintTemplate, 
+  checkHardwareSupport,
+  HardwareFingerprintTemplate 
+} from "@/utils/hardware-fingerprint-auth";
 
 export const RegisterInputs = () => {
   const { updateStep, steps } = useRegisterSteps();
@@ -29,7 +40,8 @@ export const RegisterInputs = () => {
   const [arrestLocation, setArrestLocation] = useState(inmateData.arrestLocation || "");
   const [charges, setCharges] = useState(inmateData.charges || "");
 
-  6;
+  // STEP 3
+  const [fingerprintData, setFingerprintData] = useState(inmateData.fingerprintData || "");
 
   // Optional: keep local state in sync with inmateData if it changes externally
   // useEffect(() => {
@@ -389,46 +401,276 @@ const RegisterStep3 = ({
 }: {
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
+  const { inmateData, updateInmateData } = useRegisterPageInmateData();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScanComplete, setIsScanComplete] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanProgress, setScanProgress] = useState(0);
+  const [fingerprintTemplate, setFingerprintTemplate] = useState<FingerprintTemplate | null>(null);
+  const [hardwareTemplate, setHardwareTemplate] = useState<HardwareFingerprintTemplate | null>(null);
+  const [useHardware, setUseHardware] = useState(false);
+  const [hardwareSupported, setHardwareSupported] = useState<boolean | null>(null);
 
-  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  // Check hardware support on component mount
+  useEffect(() => {
+    const checkSupport = async () => {
+      try {
+        const support = await checkHardwareSupport();
+        setHardwareSupported(support.supported);
+        console.log("🔍 Hardware fingerprint support:", support.supported);
+        if (!support.supported) {
+          console.log("⚠️ Hardware not supported reasons:", support.reasons);
+        }
+      } catch (error) {
+        console.error("❌ Error checking hardware support:", error);
+        setHardwareSupported(false);
+      }
+    };
+    
+    checkSupport();
+  }, []);
+
+  const handleButtonClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!isScanComplete) {
-      setIsModalOpen(true);
+      await startFingerprintRegistration();
     } else {
       onContinue(e);
     }
   };
 
+  const startFingerprintRegistration = async () => {
+    if (!inmateData.inmateId) {
+      console.error("❌ No inmate ID available for fingerprint registration");
+      return;
+    }
+
+    setIsScanning(true);
+    setScanProgress(0);
+    setIsModalOpen(true);
+
+    try {
+      console.log("🚀 Starting fingerprint registration process...");
+      console.log("🔧 Using hardware scanner:", useHardware);
+      
+      if (useHardware && hardwareSupported) {
+        // Use hardware fingerprint scanner
+        console.log("🔐 Using hardware fingerprint scanner");
+        const template = await registerHardwareFingerprint(inmateData.inmateId);
+        storeHardwareFingerprintTemplate(template);
+        setHardwareTemplate(template);
+        
+        // Update inmate data with hardware credential ID
+        updateInmateData({
+          ...inmateData,
+          fingerprintData: template.credentialId
+        });
+        
+        console.log("🎉 Hardware fingerprint registration completed!");
+        console.log("📋 Hardware template details:", {
+          id: template.id,
+          inmateId: template.inmateId,
+          deviceInfo: template.deviceInfo
+        });
+      } else {
+        // Use simulated fingerprint scanner
+        console.log("🔐 Using simulated fingerprint scanner");
+        
+        // Simulate progress updates
+        const progressInterval = setInterval(() => {
+          setScanProgress(prev => {
+            if (prev >= 90) {
+              clearInterval(progressInterval);
+              return 90;
+            }
+            return prev + 10;
+          });
+        }, 200);
+
+        const template = await registerFingerprint(inmateData.inmateId);
+        
+        clearInterval(progressInterval);
+        setScanProgress(100);
+        
+        // Store the template
+        storeFingerprintTemplate(template);
+        
+        // Update inmate data with encrypted fingerprint data
+        updateInmateData({
+          ...inmateData,
+          fingerprintData: template.encryptedData
+        });
+        
+        setFingerprintTemplate(template);
+        
+        console.log("🎉 Simulated fingerprint registration completed!");
+        console.log("📋 Template details:", {
+          id: template.id,
+          inmateId: template.inmateId,
+          createdAt: template.createdAt,
+          encryptedDataLength: template.encryptedData.length
+        });
+      }
+      
+      setIsScanComplete(true);
+      
+      // Close modal after a short delay
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setIsScanning(false);
+      }, 1500);
+      
+    } catch (error) {
+      console.error("❌ Fingerprint registration failed:", error);
+      setIsScanning(false);
+      setIsModalOpen(false);
+      // You could show an error message to the user here
+    }
+  };
+
   return (
     <>
-      {isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
+      {isModalOpen && (
+        <div>
+          <div className="fixed inset-0 bg-black/50 z-50"></div>
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg max-w-md w-full">
+              <div className="text-center">
+                {isScanning ? (
+                  <>
+                    <div className="mb-4">
+                      <FingerprintIcon width={80} height={80} />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">
+                      {useHardware && hardwareSupported 
+                        ? "Hardware Fingerprint Registration..." 
+                        : scanProgress < 100 
+                          ? "Scanning Fingerprint..." 
+                          : "Processing..."
+                      }
+                    </h3>
+                    {!useHardware && (
+                      <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                        <div 
+                          className="bg-primary h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${scanProgress}%` }}
+                        ></div>
+                      </div>
+                    )}
+                    <p className="text-sm text-gray-600">
+                      {useHardware && hardwareSupported 
+                        ? "Please place your finger on the scanner when prompted by your browser..."
+                        : scanProgress < 100 
+                          ? "Please place your finger on the scanner and hold still..."
+                          : "Encrypting and storing fingerprint data..."
+                      }
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="mb-4">
+                      <CheckIcon />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2 text-green-600">
+                      Fingerprint Registered Successfully!
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Your fingerprint has been {useHardware && hardwareSupported ? 'registered with hardware' : 'encrypted and stored securely'}.
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="flex-1 flex flex-col pt-5">
         <div className="flex items-center justify-between">
           <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1">
             <LeftArrowIcon />
             <span>Back</span>
           </div>
-          <h2>Biometric Entrollment</h2>
+          <h2>Biometric Enrollment</h2>
         </div>
 
         <div className="flex flex-col gap-4 w-full flex-1 justify-between pt-5">
           <div className="flex flex-col items-center justify-center gap-4">
-            <div className="text-white relative group bg-primary flex w-fit p-4 rounded-full shadow-lg">
+            <div className={`text-white relative group flex w-fit p-4 rounded-full shadow-lg transition-all duration-300 ${
+              isScanComplete ? 'bg-green-500' : 'bg-primary'
+            }`}>
               <FingerprintIcon width={150} height={150} />
             </div>
-            <h3>Register Inmate fingerprint</h3>
+            <h3>Register Inmate Fingerprint</h3>
             <p className="text-center text-sm text-text/70 max-w-md mt-2">
               This step securely links the inmate's identity to their digital profile using a
               biometric fingerprint scan. The fingerprint will be encrypted and stored for future
               authentication during purchases and transactions.
             </p>
+            
+            {/* Hardware Toggle */}
+            {hardwareSupported !== null && (
+              <div className="bg-accent/20 p-4 rounded-lg max-w-md w-full">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-medium">Use Hardware Fingerprint Scanner</label>
+                  <input
+                    type="checkbox"
+                    checked={useHardware}
+                    onChange={(e) => setUseHardware(e.target.checked)}
+                    disabled={!hardwareSupported}
+                    className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary"
+                  />
+                </div>
+                <p className="text-xs text-text/70">
+                  {hardwareSupported 
+                    ? "Hardware fingerprint scanner detected. Enable to use your laptop's built-in fingerprint reader."
+                    : "Hardware fingerprint scanner not available. Using simulated scanner."
+                  }
+                </p>
+              </div>
+            )}
+            
+            {fingerprintTemplate && !useHardware && (
+              <div className="bg-accent/20 p-4 rounded-lg max-w-md w-full">
+                <h4 className="font-semibold mb-2 text-green-500">✓ Simulated Registration Complete</h4>
+                <div className="text-xs text-text/70 space-y-1">
+                  <p><strong>Template ID:</strong> {fingerprintTemplate.id}</p>
+                  <p><strong>Created:</strong> {new Date(fingerprintTemplate.createdAt).toLocaleString()}</p>
+                  <p><strong>Encrypted Data:</strong> {fingerprintTemplate.encryptedData.length} characters</p>
+                </div>
+              </div>
+            )}
+            
+            {hardwareTemplate && useHardware && (
+              <div className="bg-accent/20 p-4 rounded-lg max-w-md w-full">
+                <h4 className="font-semibold mb-2 text-green-500">✓ Hardware Registration Complete</h4>
+                <div className="text-xs text-text/70 space-y-1">
+                  <p><strong>Template ID:</strong> {hardwareTemplate.id}</p>
+                  <p><strong>Device:</strong> {hardwareTemplate.deviceInfo.name}</p>
+                  <p><strong>Created:</strong> {new Date(hardwareTemplate.createdAt).toLocaleString()}</p>
+                  <p><strong>Credential ID:</strong> {hardwareTemplate.credentialId.substring(0, 20)}...</p>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="text-center flex flex-col">
-            <p className="text-sm text-text/70 mb-2">Start the scanning process below.</p>
-            <Button onClick={handleButtonClick}>
-              {isScanComplete ? "Continue" : "Scan Fingerprint"}
+            <p className="text-sm text-text/70 mb-2">
+              {isScanComplete 
+                ? `Fingerprint has been registered successfully using ${useHardware && hardwareSupported ? 'hardware' : 'simulated'} scanner. You can now continue.`
+                : "Start the scanning process below."
+              }
+            </p>
+            <Button 
+              onClick={handleButtonClick}
+              disabled={isScanning}
+              className={isScanComplete ? 'bg-green-500 hover:bg-green-600' : ''}
+            >
+              {isScanning 
+                ? "Scanning..." 
+                : isScanComplete 
+                  ? "Continue" 
+                  : "Scan Fingerprint"
+              }
             </Button>
           </div>
         </div>

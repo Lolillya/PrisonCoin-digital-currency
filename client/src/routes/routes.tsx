@@ -6,6 +6,8 @@ import DashboardPage from "../pages/admin/dashboard/index";
 import ResgisterPage from "../pages/admin/register/index";
 import CheckBalancePage from "../pages/admin/check-balance";
 import TransactionPage from "../pages/admin/transaction";
+import FingerprintTestPage from "../pages/admin/fingerprint-test";
+import HardwareFingerprintTestPage from "../pages/admin/hardware-fingerprint-test";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +44,14 @@ export const router = createBrowserRouter([
           {
             path: "transactions/",
             element: <TransactionPage />,
+          },
+          {
+            path: "fingerprint-test/",
+            element: <FingerprintTestPage />,
+          },
+          {
+            path: "hardware-fingerprint-test/",
+            element: <HardwareFingerprintTestPage />,
           },
         ],
       },
