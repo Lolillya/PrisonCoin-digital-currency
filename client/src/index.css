@@ -3,10 +3,10 @@
 @theme {
   /* COLOR PALETTE */
   --color-primary: #0f1413;
-  --color-secondary: #2e4f3f;
+  --color-secondary: #f3f4f6;
   --color-tertiary: #d6cbb3;
   --color-accent: #18230f;
-  --color-text: #e6eae7;
+  --color-text: #000;
   --color-background: #1a201e;
   --color-border: #2f3633;
   --color-highlight: #758d71;
@@ -15,9 +15,6 @@
 
   /* FONT */
   --font-display: "Poppins", sans-serif;
-}
-
-@layer base {
 }
 
 @layer base {
@@ -49,7 +46,10 @@
     @apply flex px-16 py-4  flex-col overflow-y-hidden flex-1;
   }
   input {
-    @apply px-4 pb-2 pt-6 bg-primary rounded-md shadow-md w-full border-border/80 border text-lg tracking-wider text-text;
+    @apply px-4 pb-2 pt-8 text-sm bg-primary text-white/80 rounded-md shadow-md w-full border-border/80 border tracking-wider;
+  }
+  label {
+    @apply text-text;
   }
 
   /* CUSTOM CLASSES */

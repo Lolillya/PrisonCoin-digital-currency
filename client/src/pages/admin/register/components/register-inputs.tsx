@@ -156,7 +156,9 @@ export const RegisterInputs = () => {
       );
     }
     if (!steps.step5) {
-      return <RegisterStep5 onContinue={(e) => handleContinue(e, 5)} onBack={() => handleBack(5)} />;
+      return (
+        <RegisterStep5 onContinue={(e) => handleContinue(e, 5)} onBack={() => handleBack(5)} />
+      );
     }
     return null;
   };
@@ -197,10 +199,13 @@ const RegisterStep1 = ({
 }) => {
   return (
     <div className="flex-1 flex mt-4">
-      <div className="flex flex-col gap-4 w-full justify-between">
+      <div className="flex flex-col gap-6 w-full justify-between">
         {/* HEADER */}
         <div className="w-full flex justify-between items-center">
-          <div className="p-4 bg-primary text-white rounded-lg flex items-center gap-1" onClick={onBack}>
+          <div
+            className="p-4 bg-primary text-white rounded-lg flex items-center gap-1"
+            onClick={onBack}
+          >
             <LeftArrowIcon />
             <span>Back</span>
           </div>
@@ -208,25 +213,35 @@ const RegisterStep1 = ({
           <h2>Personal Information</h2>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {/* inmate fullname */}
-          <div className="flex gap-4 w-full">
-            <div className="flex flex-col relative group w-full">
+          <div className="flex gap-6 w-full">
+            <div className="flex flex-col relative group w-full shadow-md rounded-md drop-shadow-2xl">
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Firstname
               </label>
-              <Input placeholder="John" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+              <Input
+                placeholder="John"
+                required
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
             </div>
-            <div className="flex flex-col relative group w-full">
+            <div className="flex flex-col relative group w-full shadow-md rounded-md drop-shadow-lg">
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Lastname
               </label>
-              <Input placeholder="Doe" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
+              <Input
+                placeholder="Doe"
+                required
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
             </div>
           </div>
 
           {/* inmate auto-generated inmate number */}
-          <div className="flex flex-col relative group">
+          <div className="flex flex-col relative group w-full shadow-md rounded-md drop-shadow-lg">
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
               In-mate No. (auto-generated)
             </label>
@@ -240,26 +255,41 @@ const RegisterStep1 = ({
           </div>
 
           {/* inmate address */}
-          <div className="flex flex-col relative group">
+          <div className="flex flex-col relative group w-full shadow-md rounded-md drop-shadow-lg">
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
               Address
             </label>
-            <Input placeholder="Full Address" required value={address} onChange={(e) => setAddress(e.target.value)} />
+            <Input
+              placeholder="Full Address"
+              required
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
           </div>
 
           {/* inmate height and weight */}
-          <div className="flex gap-4 w-full">
-            <div className="flex flex-col relative group w-full">
+          <div className="flex gap-6 w-full">
+            <div className="flex flex-col relative group w-full shadow-md rounded-md drop-shadow-lg">
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Height
               </label>
-              <Input placeholder="in inches" required value={height} onChange={(e) => setHeight(e.target.value)} />
+              <Input
+                placeholder="in inches"
+                required
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+              />
             </div>
-            <div className="flex flex-col relative group w-full">
+            <div className="flex flex-col relative group w-full shadow-md rounded-md drop-shadow-lg">
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-[0.625rem]">
                 Weight
               </label>
-              <Input placeholder="in kg" required value={weight} onChange={(e) => setWeight(e.target.value)} />
+              <Input
+                placeholder="in kg"
+                required
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -302,7 +332,7 @@ const RegisterStep2 = ({
 }) => {
   return (
     <div className="flex-1 flex">
-      <div className="flex flex-col gap-4 w-full justify-between mt-4">
+      <div className="flex flex-col gap-6 w-full justify-between mt-4">
         {/* HEADER */}
         <div className="w-full flex justify-between items-center">
           <button
@@ -316,7 +346,7 @@ const RegisterStep2 = ({
           <h2>Arrest Information</h2>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {/* arresting officer */}
           <div className="flex flex-col relative group">
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
@@ -331,9 +361,9 @@ const RegisterStep2 = ({
           </div>
 
           {/* arrest date */}
-          <div className="flex gap-4 items-center w-full">
+          <div className="flex gap-6 items-center w-full">
             {/* arrest date in mm/dd/yy */}
-            <div className="group relative w-full">
+            <div className="flex flex-col relative group w-full shadow-md rounded-md drop-shadow-lg">
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                 Arrest Date
               </label>
@@ -347,7 +377,7 @@ const RegisterStep2 = ({
             </div>
 
             {/* arrest time */}
-            <div className="group relative w-full">
+            <div className="flex flex-col relative group w-full shadow-md rounded-md drop-shadow-lg">
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                 Time of Arrest
               </label>
@@ -362,7 +392,7 @@ const RegisterStep2 = ({
           </div>
 
           {/* arrest location */}
-          <div className="flex flex-col relative group">
+          <div className="flex flex-col relative group w-full shadow-md rounded-md drop-shadow-lg">
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
               Location of Arrest
             </label>
@@ -375,13 +405,17 @@ const RegisterStep2 = ({
           </div>
 
           {/* crime description */}
-          <div className="flex flex-col relative group">
+          <div className="flex flex-col relative group w-full shadow-md rounded-md drop-shadow-lg">
             <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
               Charges / Description of Crime
             </label>
-            <Input placeholder="John Doe" required value={charges} onChange={(e) => setCharges(e.target.value)} />
+            <Input
+              placeholder="John Doe"
+              required
+              value={charges}
+              onChange={(e) => setCharges(e.target.value)}
+            />
           </div>
-
         </div>
 
         {/* SUBMIT BUTTON */}
@@ -415,7 +449,9 @@ const RegisterStep3 = ({
     reasons: string[];
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [registeredTemplate, setRegisteredTemplate] = useState<HardwareFingerprintTemplate | null>(null);
+  const [registeredTemplate, setRegisteredTemplate] = useState<HardwareFingerprintTemplate | null>(
+    null
+  );
 
   // Check hardware support on component mount
   useEffect(() => {
@@ -536,8 +572,12 @@ const RegisterStep3 = ({
                     <div className="mb-4">
                       <CheckIcon />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2 text-green-600">Fingerprint Registered Successfully!</h3>
-                    <p className="text-sm text-gray-600">Your fingerprint has been registered successfully.</p>
+                    <h3 className="text-lg font-semibold mb-2 text-green-600">
+                      Fingerprint Registered Successfully!
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Your fingerprint has been registered successfully.
+                    </p>
                   </>
                 )}
               </div>
@@ -559,8 +599,8 @@ const RegisterStep3 = ({
           <h2>Biometric Enrollment</h2>
         </div>
 
-        <div className="flex flex-col gap-4 w-full flex-1 justify-between pt-5">
-          <div className="flex flex-col items-center justify-center gap-4">
+        <div className="flex flex-col gap-6 w-full flex-1 justify-between pt-5">
+          <div className="flex flex-col items-center justify-center gap-6">
             <div
               className={`text-white relative group flex w-fit p-4 rounded-full shadow-lg transition-all duration-300 ${
                 isScanComplete ? "bg-green-500" : "bg-primary"
@@ -570,8 +610,9 @@ const RegisterStep3 = ({
             </div>
             <h3>Register Inmate Fingerprint</h3>
             <p className="text-center text-sm text-text/70 max-w-md mt-2">
-              This step registers the inmate's fingerprint using the hardware scanner for secure identification. The
-              fingerprint data will be stored securely for future authentication.
+              This step registers the inmate's fingerprint using the hardware scanner for secure
+              identification. The fingerprint data will be stored securely for future
+              authentication.
             </p>
 
             {/* Hardware Support Status */}
@@ -583,8 +624,14 @@ const RegisterStep3 = ({
                     : "bg-red-500/20 border border-red-500/30"
                 }`}
               >
-                <h4 className={`font-semibold mb-2 ${hardwareSupport.supported ? "text-green-500" : "text-red-500"}`}>
-                  {hardwareSupport.supported ? "✓ Hardware Scanner Available" : "✗ Hardware Scanner Not Available"}
+                <h4
+                  className={`font-semibold mb-2 ${
+                    hardwareSupport.supported ? "text-green-500" : "text-red-500"
+                  }`}
+                >
+                  {hardwareSupport.supported
+                    ? "✓ Hardware Scanner Available"
+                    : "✗ Hardware Scanner Not Available"}
                 </h4>
                 <div className="text-xs text-text/70 space-y-1">
                   {hardwareSupport.supported ? (
@@ -684,15 +731,17 @@ const RegisterStep4 = ({
       </div>
 
       <div className="flex flex-col gap-6 mt-8 flex-1">
-        <div className="flex-1 flex flex-col justify-between gap-4">
-          <div className="flex gap-4 items-center">
+        <div className="flex-1 flex flex-col justify-between gap-6">
+          <div className="flex gap-6 items-center">
             <div className="flex gap-2 items-center">
               <label className="text-text/70">Status:</label>
-              <span className="px-3 py-1 bg-yellow-500/20 text-yellow-500 rounded-full text-sm">PENDING</span>
+              <span className="px-3 py-1 bg-yellow-500/20 text-yellow-500 rounded-full text-sm">
+                PENDING
+              </span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-6">
             <div className="flex flex-col relative group">
               <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                 Wallet Address
@@ -712,7 +761,7 @@ const RegisterStep4 = ({
               <Input type="password" placeholder="Enter private key" required />
             </div> */}
 
-            <div className="flex gap-4">
+            <div className="flex gap-6">
               <div className="flex flex-col relative group w-full">
                 <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
                   Initial Token Balance
@@ -773,35 +822,36 @@ const RegisterStep5 = ({
       // Map the frontend data to the backend expected format
       const registrationData = {
         InmateNumber: inmateData.inmateId || `INMATE_001`,
-        FullName: `${inmateData.firstName || ''} ${inmateData.lastName || ''}`.trim(),
-        Address: inmateData.address || '',
+        FullName: `${inmateData.firstName || ""} ${inmateData.lastName || ""}`.trim(),
+        Address: inmateData.address || "",
         Height: parseFloat(inmateData.height) || 0,
         Weight: parseFloat(inmateData.weight) || 0,
-        ArrestingOfficer: inmateData.arrestingOfficer || '',
-        ArrestDate: inmateData.arrestDate || new Date().toISOString().split('T')[0],
-        ArrestTime: inmateData.arrestTime || '00:00:00',
-        ArrestLocation: inmateData.arrestLocation || '',
-        Charges: inmateData.charges || '',
-        FingerprintHash: inmateData.fingerprintData || '',
-        WalletAddress: inmateData.walletAddress || '',
+        ArrestingOfficer: inmateData.arrestingOfficer || "",
+        ArrestDate: inmateData.arrestDate || new Date().toISOString().split("T")[0],
+        ArrestTime: inmateData.arrestTime || "00:00:00",
+        ArrestLocation: inmateData.arrestLocation || "",
+        Charges: inmateData.charges || "",
+        FingerprintHash: inmateData.fingerprintData || "",
+        WalletAddress: inmateData.walletAddress || "",
         InitialBalance: 100, // Default value
-        DailySpendingLimit: 20 // Default value
+        DailySpendingLimit: 20, // Default value
       };
 
       console.log("🚀 Submitting inmate registration data:", registrationData);
-      
+
       // Call the API to register the inmate
       const response = await registerInmate(registrationData);
-      
+
       console.log("✅ Registration successful:", response);
       setSubmitSuccess(true);
-      
+
       // Call the original onContinue to proceed to completion
       onContinue(e);
-      
     } catch (error) {
       console.error("❌ Registration failed:", error);
-      setSubmitError(error instanceof Error ? error.message : "Registration failed. Please try again.");
+      setSubmitError(
+        error instanceof Error ? error.message : "Registration failed. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -810,7 +860,7 @@ const RegisterStep5 = ({
   return (
     <div className="flex-1 flex flex-col pt-5">
       <div className="flex items-center justify-between">
-        <button 
+        <button
           type="button"
           onClick={onBack}
           className="p-4 bg-primary text-white rounded-lg flex items-center gap-1 hover:bg-primary/80 transition-colors"
@@ -822,7 +872,7 @@ const RegisterStep5 = ({
       </div>
 
       <div className="flex flex-col gap-6 mt-8 flex-1 justify-between">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           <p className="text-center text-text/70">
             Please review the information provided before finalizing the registration.
           </p>
@@ -830,32 +880,57 @@ const RegisterStep5 = ({
           {/* Registration Summary */}
           <div className="bg-accent/20 p-6 rounded-lg max-w-2xl w-full">
             <h3 className="font-semibold mb-4 text-lg">Registration Summary</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
               <div>
                 <h4 className="font-medium mb-2 text-primary">Personal Information</h4>
                 <div className="space-y-1 text-text/70">
-                  <p><strong>Name:</strong> {inmateData.firstName} {inmateData.lastName}</p>
-                  <p><strong>Inmate ID:</strong> {inmateData.inmateId}</p>
-                  <p><strong>Address:</strong> {inmateData.address}</p>
-                  <p><strong>Height:</strong> {inmateData.height}</p>
-                  <p><strong>Weight:</strong> {inmateData.weight}</p>
+                  <p>
+                    <strong>Name:</strong> {inmateData.firstName} {inmateData.lastName}
+                  </p>
+                  <p>
+                    <strong>Inmate ID:</strong> {inmateData.inmateId}
+                  </p>
+                  <p>
+                    <strong>Address:</strong> {inmateData.address}
+                  </p>
+                  <p>
+                    <strong>Height:</strong> {inmateData.height}
+                  </p>
+                  <p>
+                    <strong>Weight:</strong> {inmateData.weight}
+                  </p>
                 </div>
               </div>
               <div>
                 <h4 className="font-medium mb-2 text-primary">Arrest Information</h4>
                 <div className="space-y-1 text-text/70">
-                  <p><strong>Officer:</strong> {inmateData.arrestingOfficer}</p>
-                  <p><strong>Date:</strong> {inmateData.arrestDate}</p>
-                  <p><strong>Time:</strong> {inmateData.arrestTime}</p>
-                  <p><strong>Location:</strong> {inmateData.arrestLocation}</p>
-                  <p><strong>Charges:</strong> {inmateData.charges}</p>
+                  <p>
+                    <strong>Officer:</strong> {inmateData.arrestingOfficer}
+                  </p>
+                  <p>
+                    <strong>Date:</strong> {inmateData.arrestDate}
+                  </p>
+                  <p>
+                    <strong>Time:</strong> {inmateData.arrestTime}
+                  </p>
+                  <p>
+                    <strong>Location:</strong> {inmateData.arrestLocation}
+                  </p>
+                  <p>
+                    <strong>Charges:</strong> {inmateData.charges}
+                  </p>
                 </div>
               </div>
               <div>
                 <h4 className="font-medium mb-2 text-primary">Biometric & Wallet</h4>
                 <div className="space-y-1 text-text/70">
-                  <p><strong>Fingerprint:</strong> {inmateData.fingerprintData ? "Registered" : "Not registered"}</p>
-                  <p><strong>Wallet Address:</strong> {inmateData.walletAddress || "Not assigned"}</p>
+                  <p>
+                    <strong>Fingerprint:</strong>{" "}
+                    {inmateData.fingerprintData ? "Registered" : "Not registered"}
+                  </p>
+                  <p>
+                    <strong>Wallet Address:</strong> {inmateData.walletAddress || "Not assigned"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -873,14 +948,16 @@ const RegisterStep5 = ({
           {submitSuccess && (
             <div className="bg-green-500/20 p-4 rounded-lg border border-green-500/30">
               <h4 className="font-semibold mb-2 text-green-500">✓ Registration Submitted</h4>
-              <p className="text-sm text-text/70">Inmate registration has been successfully submitted to the server.</p>
+              <p className="text-sm text-text/70">
+                Inmate registration has been successfully submitted to the server.
+              </p>
             </div>
           )}
         </div>
 
         <div className="mt-4">
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             onClick={handleConfirmRegistration}
             disabled={isSubmitting}
             className={isSubmitting ? "opacity-50 cursor-not-allowed" : ""}
@@ -896,18 +973,18 @@ const RegisterStep5 = ({
 const RegisterComplete = () => {
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-8 py-5">
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-col items-center gap-6">
         <div className="bg-primary p-6 rounded-full text-white">
           <CheckIcon />
         </div>
         <h2 className="text-3xl font-bold">Registration Complete!</h2>
         <p className="text-white/70 text-center max-w-md">
-          Thank you for registering. The inmate's account has been created successfully and is now ready to use the
-          system.
+          Thank you for registering. The inmate's account has been created successfully and is now
+          ready to use the system.
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 w-full max-w-sm">
+      <div className="flex flex-col gap-6 w-full max-w-sm">
         <div className="bg-accent/80 p-4 rounded-lg">
           <h3 className="font-semibold mb-2">Next Steps:</h3>
           <ul className="list-disc list-inside text-white/70 space-y-2">
