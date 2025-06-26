@@ -1,7 +1,7 @@
 import { FingerprintIcon, LeftArrowIcon } from "@/components/icons/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Modal } from "@/components/ui/modal";
+// import { Modal } from "@/components/ui/modal";
 import { useRegisterSteps } from "@/hooks/register-page/register-page-steps.query";
 import React, { useState, useEffect } from "react";
 import { CheckIcon } from "@/components/icons/icons";
@@ -9,10 +9,11 @@ import { useRegisterPageInmateData } from "@/hooks/register-page/register-page-i
 import {
   registerHardwareFingerprint,
   storeHardwareFingerprintTemplate,
-  getHardwareFingerprintTemplate,
+  // getHardwareFingerprintTemplate,
   checkHardwareSupport,
   HardwareFingerprintTemplate,
 } from "@/utils/hardware-fingerprint-auth";
+import { registerInmate } from "@/api/inmates";
 
 export const RegisterInputs = () => {
   const { updateStep, steps, setStep } = useRegisterSteps();
@@ -41,15 +42,6 @@ export const RegisterInputs = () => {
 
   // STEP 4
   const [walletAddress, setWalletAddress] = useState(inmateData.walletAddress || "");
-
-  // Optional: keep local state in sync with inmateData if it changes externally
-  // useEffect(() => {
-  //   setFullName(inmateData.fullName || "");
-  //   setInmateNo(inmateData.inmateId || "");
-  //   setAddress(inmateData.address || "");
-  //   setHeight(inmateData.height || "");
-  //   setWeight(inmateData.weight || "");
-  // }, [inmateData]);
 
   // Global handleContinue
   const handleContinue = (e: React.MouseEvent<HTMLButtonElement>, stepId: number) => {
@@ -390,13 +382,6 @@ const RegisterStep2 = ({
             <Input placeholder="John Doe" required value={charges} onChange={(e) => setCharges(e.target.value)} />
           </div>
 
-          {/* inmate image */}
-          {/* <div className="flex flex-col relative group">
-            <label className="absolute ml-4 text-white/80 text-base mt-2 transition-all duration-200 group-focus-within:text-xs">
-              Image
-            </label>
-            <Input type="file" />
-          </div> */}
         </div>
 
         {/* SUBMIT BUTTON */}
@@ -774,10 +759,58 @@ const RegisterStep5 = ({
   onContinue: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onBack: () => void;
 }) => {
+  const { inmateData } = useRegisterPageInmateData();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const handleConfirmRegistration = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      // Map the frontend data to the backend expected format
+      const registrationData = {
+        InmateNumber: inmateData.inmateId || `INMATE_001`,
+        FullName: `${inmateData.firstName || ''} ${inmateData.lastName || ''}`.trim(),
+        Address: inmateData.address || '',
+        Height: parseFloat(inmateData.height) || 0,
+        Weight: parseFloat(inmateData.weight) || 0,
+        ArrestingOfficer: inmateData.arrestingOfficer || '',
+        ArrestDate: inmateData.arrestDate || new Date().toISOString().split('T')[0],
+        ArrestTime: inmateData.arrestTime || '00:00:00',
+        ArrestLocation: inmateData.arrestLocation || '',
+        Charges: inmateData.charges || '',
+        FingerprintHash: inmateData.fingerprintData || '',
+        WalletAddress: inmateData.walletAddress || '',
+        InitialBalance: 100, // Default value
+        DailySpendingLimit: 20 // Default value
+      };
+
+      console.log("🚀 Submitting inmate registration data:", registrationData);
+      
+      // Call the API to register the inmate
+      const response = await registerInmate(registrationData);
+      
+      console.log("✅ Registration successful:", response);
+      setSubmitSuccess(true);
+      
+      // Call the original onContinue to proceed to completion
+      onContinue(e);
+      
+    } catch (error) {
+      console.error("❌ Registration failed:", error);
+      setSubmitError(error instanceof Error ? error.message : "Registration failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col pt-5">
       <div className="flex items-center justify-between">
-        <button
+        <button 
           type="button"
           onClick={onBack}
           className="p-4 bg-primary text-white rounded-lg flex items-center gap-1 hover:bg-primary/80 transition-colors"
@@ -789,15 +822,70 @@ const RegisterStep5 = ({
       </div>
 
       <div className="flex flex-col gap-6 mt-8 flex-1 justify-between">
-        <p className="text-center text-text/70">
-          Please review the information provided before finalizing the registration.
-        </p>
+        <div className="flex flex-col gap-4">
+          <p className="text-center text-text/70">
+            Please review the information provided before finalizing the registration.
+          </p>
 
-        <div className="overflow-y-auto pr-2">{/* Display summary of all steps here */}</div>
+          {/* Registration Summary */}
+          <div className="bg-accent/20 p-6 rounded-lg max-w-2xl w-full">
+            <h3 className="font-semibold mb-4 text-lg">Registration Summary</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <h4 className="font-medium mb-2 text-primary">Personal Information</h4>
+                <div className="space-y-1 text-text/70">
+                  <p><strong>Name:</strong> {inmateData.firstName} {inmateData.lastName}</p>
+                  <p><strong>Inmate ID:</strong> {inmateData.inmateId}</p>
+                  <p><strong>Address:</strong> {inmateData.address}</p>
+                  <p><strong>Height:</strong> {inmateData.height}</p>
+                  <p><strong>Weight:</strong> {inmateData.weight}</p>
+                </div>
+              </div>
+              <div>
+                <h4 className="font-medium mb-2 text-primary">Arrest Information</h4>
+                <div className="space-y-1 text-text/70">
+                  <p><strong>Officer:</strong> {inmateData.arrestingOfficer}</p>
+                  <p><strong>Date:</strong> {inmateData.arrestDate}</p>
+                  <p><strong>Time:</strong> {inmateData.arrestTime}</p>
+                  <p><strong>Location:</strong> {inmateData.arrestLocation}</p>
+                  <p><strong>Charges:</strong> {inmateData.charges}</p>
+                </div>
+              </div>
+              <div>
+                <h4 className="font-medium mb-2 text-primary">Biometric & Wallet</h4>
+                <div className="space-y-1 text-text/70">
+                  <p><strong>Fingerprint:</strong> {inmateData.fingerprintData ? "Registered" : "Not registered"}</p>
+                  <p><strong>Wallet Address:</strong> {inmateData.walletAddress || "Not assigned"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Error Display */}
+          {submitError && (
+            <div className="bg-red-500/20 p-4 rounded-lg border border-red-500/30">
+              <h4 className="font-semibold mb-2 text-red-500">✗ Registration Error</h4>
+              <p className="text-sm text-text/70">{submitError}</p>
+            </div>
+          )}
+
+          {/* Success Display */}
+          {submitSuccess && (
+            <div className="bg-green-500/20 p-4 rounded-lg border border-green-500/30">
+              <h4 className="font-semibold mb-2 text-green-500">✓ Registration Submitted</h4>
+              <p className="text-sm text-text/70">Inmate registration has been successfully submitted to the server.</p>
+            </div>
+          )}
+        </div>
 
         <div className="mt-4">
-          <Button type="submit" onClick={onContinue}>
-            Confirm Registration
+          <Button 
+            type="submit" 
+            onClick={handleConfirmRegistration}
+            disabled={isSubmitting}
+            className={isSubmitting ? "opacity-50 cursor-not-allowed" : ""}
+          >
+            {isSubmitting ? "Submitting..." : "Confirm Registration"}
           </Button>
         </div>
       </div>
