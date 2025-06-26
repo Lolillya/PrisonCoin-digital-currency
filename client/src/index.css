@@ -51,6 +51,32 @@
   label {
     @apply text-text;
   }
+  span {
+    @apply text-text/80 text-sm;
+  }
+
+  table {
+    @apply w-full text-left border-collapse text-text rounded-xl overflow-hidden bg-white/5 shadow-md;
+  }
+  th,
+  td {
+    @apply px-4 py-3;
+  }
+  th {
+    @apply font-semibold text-sm uppercase tracking-wider bg-background/80 text-text/60 border-b border-border/40;
+  }
+  tr {
+    @apply border-b border-border/20;
+  }
+  tr:last-child {
+    @apply border-b-0;
+  }
+  tbody tr:nth-child(even) {
+    @apply bg-white/5;
+  }
+  tbody tr:nth-child(odd) {
+    @apply bg-white/10;
+  }
 
   /* CUSTOM CLASSES */
   .sidebar-item {
