@@ -8,7 +8,10 @@ export const Sidebar = () => {
     <section className="w-full max-w-[18rem] my-4 p-4 flex flex-col justify-between">
       {/* TOP PANEL */}
       <div className="flex flex-col gap-4">
-        <div className="w-full justify-center flex">
+        <div
+          className="w-full justify-center flex"
+          onClick={() => navigate("/admin/dashboard/home")}
+        >
           <EthLogo />
         </div>
         <div

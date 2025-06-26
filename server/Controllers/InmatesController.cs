@@ -12,7 +12,7 @@ public class InmateController : ControllerBase
     // DEPLOYED CONTRACT ADDRESS 0x60944c759F5E416005F6f88823A924C7d2EEbE6B
     private readonly string _privateKey = "0xba5da40da9963ef6204d0463a1535b431cb075c7576d817404d3e5823fe09dbd"; // no '0x'
     private readonly string _rpcUrl = "http://host.docker.internal:7545";
-    private readonly string _contractAddress = "0x59CaF498676e4F623a91ef0a77059BB3F7A7894E";
+    private readonly string _contractAddress = "0x39CDDD59d9ad0c5F54178Cd6CaE213BaB94E46E5";
     private readonly string _abi;
 
     private static List<InmateModel> _inmates = new List<InmateModel>();
@@ -186,4 +186,92 @@ public class InmateController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+
+    [HttpGet("incoming-transactions/{address}")]
+    public async Task<IActionResult> GetIncomingTransactions(string address)
+    {
+        try
+        {
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+
+            var getIncomingFunction = contract.GetFunction("getIncomingTransactions");
+            var result = await getIncomingFunction.CallDeserializingToObjectAsync<List<TransactionModel>>(address);
+
+            return Ok(new { transactions = result });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("outgoing-transactions/{address}")]
+    public async Task<IActionResult> GetOutgoingTransactions(string address)
+    {
+        try
+        {
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+
+            var getOutgoingFunction = contract.GetFunction("getOutgoingTransactions");
+            var result = await getOutgoingFunction.CallDeserializingToObjectAsync<List<TransactionModel>>(address);
+
+            return Ok(new { transactions = result });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("all-transactions")]
+    public async Task<IActionResult> GetAllTransactions()
+    {
+        try
+        {
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+
+            var getAllTransactionsFunction = contract.GetFunction("getAllTransactions");
+            var result = await getAllTransactionsFunction.CallDeserializingToObjectAsync<AllTransactionsResult>();
+
+            return Ok(new { transactions = result.Transactions });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("all-transactions-paginated")]
+    public async Task<IActionResult> GetAllTransactionsPaginated([FromQuery] int offset = 0, [FromQuery] int limit = 10)
+    {
+        try
+        {
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+
+            var getAllTransactionsPaginatedFunction = contract.GetFunction("getAllTransactionsPaginated");
+            var result = await getAllTransactionsPaginatedFunction.CallDeserializingToObjectAsync<PaginatedTransactionsResult>(offset, limit);
+
+            return Ok(new { 
+                transactions = result.Transactions, 
+                totalCount = result.TotalCount,
+                offset = offset,
+                limit = limit
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    // Define this model to match your Solidity Transaction struct
+
 }

@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Numerics;
+using Nethereum.ABI.FunctionEncoding.Attributes;
 
 namespace server.Models
 {
@@ -31,5 +33,41 @@ namespace server.Models
         public int InitialBalance { get; set; }
         public int DailySpendingLimit { get; set; }
 
+    }
+
+    [FunctionOutput]
+    public class TransactionModel
+    {
+        [Parameter("address", "from", 1)]
+        public string From { get; set; }
+        
+        [Parameter("address", "to", 2)]
+        public string To { get; set; }
+        
+        [Parameter("string", "item", 3)]
+        public string Item { get; set; }
+        
+        [Parameter("uint256", "amount", 4)]
+        public BigInteger Amount { get; set; }
+        
+        [Parameter("uint256", "timestamp", 5)]
+        public BigInteger Timestamp { get; set; }
+    }
+
+    [FunctionOutput]
+    public class PaginatedTransactionsResult
+    {
+        [Parameter("tuple[]", "transactions", 1)]
+        public List<TransactionModel> Transactions { get; set; }
+        
+        [Parameter("uint256", "totalCount", 2)]
+        public BigInteger TotalCount { get; set; }
+    }
+
+    [FunctionOutput]
+    public class AllTransactionsResult
+    {
+        [Parameter("tuple[]", "transactions", 1)]
+        public List<TransactionModel> Transactions { get; set; }
     }
 }
