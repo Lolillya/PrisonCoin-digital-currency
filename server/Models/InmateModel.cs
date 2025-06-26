@@ -70,4 +70,30 @@ namespace server.Models
         [Parameter("tuple[]", "transactions", 1)]
         public List<TransactionModel> Transactions { get; set; }
     }
+
+    // ETH Transfer Request Models
+    public class TransferEthRequest
+    {
+        public string ToAddress { get; set; }
+        public decimal Amount { get; set; }
+        public string Reason { get; set; }
+    }
+
+    public class TransferEthBatchRequest
+    {
+        public List<string> Recipients { get; set; }
+        public List<decimal> Amounts { get; set; }
+        public string Reason { get; set; }
+    }
+
+    public class WithdrawEthRequest
+    {
+        public string ToAddress { get; set; }
+        public decimal Amount { get; set; }
+    }
+
+    public class FundContractRequest
+    {
+        public decimal Amount { get; set; }
+    }
 }
