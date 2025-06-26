@@ -10,9 +10,9 @@ using server.Models;
 public class InmateController : ControllerBase
 {
     // DEPLOYED CONTRACT ADDRESS 0x60944c759F5E416005F6f88823A924C7d2EEbE6B
-    private readonly string _privateKey = "0x2b10d32f903dce86854024c25cc758abe338ee520a137311a5357f11883587a1"; // no '0x'
+    private readonly string _privateKey = "0xba5da40da9963ef6204d0463a1535b431cb075c7576d817404d3e5823fe09dbd"; // no '0x'
     private readonly string _rpcUrl = "http://host.docker.internal:7545";
-    private readonly string _contractAddress = "0x718EAD6F0c90F13954eFebC8C8B0c3860365c642";
+    private readonly string _contractAddress = "0x59CaF498676e4F623a91ef0a77059BB3F7A7894E";
     private readonly string _abi;
 
     private static List<InmateModel> _inmates = new List<InmateModel>();
@@ -30,7 +30,7 @@ public class InmateController : ControllerBase
         {
             // Log the received data
             Console.WriteLine($"Received inmate registration data: {System.Text.Json.JsonSerializer.Serialize(inmateData)}");
-            
+
             // For now, just return success - you can add your database logic here
             return Ok(new
             {
