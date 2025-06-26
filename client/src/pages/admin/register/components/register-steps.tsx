@@ -25,11 +25,7 @@ export const RegisterSteps = () => {
       </div>
 
       {/* STEP LINE */}
-      <div
-        className={`w-full h-1 mb-5 ${
-          steps.step1 ? "bg-primary" : "bg-gray-400"
-        }`}
-      ></div>
+      <div className={`w-full h-1 mb-5 ${steps.step1 ? "bg-primary" : "bg-gray-400"}`}></div>
 
       {/* STEP 2 */}
       <div className="flex flex-col justify-center items-center gap-1">
@@ -44,11 +40,7 @@ export const RegisterSteps = () => {
       </div>
 
       {/* STEP LINE */}
-      <div
-        className={`w-full h-1 mb-5 ${
-          steps.step2 ? "bg-primary" : "bg-gray-400"
-        }`}
-      ></div>
+      <div className={`w-full h-1 mb-5 ${steps.step2 ? "bg-primary" : "bg-gray-400"}`}></div>
 
       {/* STEP 3 */}
       <div className="flex flex-col justify-center items-center gap-1">
@@ -63,11 +55,7 @@ export const RegisterSteps = () => {
       </div>
 
       {/* STEP LINE */}
-      <div
-        className={`w-full h-1 mb-5 ${
-          steps.step3 ? "bg-primary" : "bg-gray-400"
-        }`}
-      ></div>
+      <div className={`w-full h-1 mb-5 ${steps.step3 ? "bg-primary" : "bg-gray-400"}`}></div>
 
       {/* STEP 4 */}
       <div className="flex flex-col justify-center items-center gap-1">
@@ -82,11 +70,7 @@ export const RegisterSteps = () => {
       </div>
 
       {/* STEP LINE */}
-      <div
-        className={`w-full h-1 mb-5 ${
-          steps.step4 ? "bg-primary" : "bg-gray-400"
-        }`}
-      ></div>
+      <div className={`w-full h-1 mb-5 ${steps.step4 ? "bg-primary" : "bg-gray-400"}`}></div>
 
       {/* STEP 5 */}
       <div className="flex flex-col justify-center items-center gap-1">

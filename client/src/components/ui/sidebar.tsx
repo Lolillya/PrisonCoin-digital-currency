@@ -1,17 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import {
-  CoinsIcon,
-  ExchangeIcon,
-  MenuIcon,
-  UserIcon,
-  UserPlusIcon,
-} from "../icons/icons";
+import { CoinsIcon, ExchangeIcon, MenuIcon, UserIcon, UserPlusIcon } from "../icons/icons";
 import { EthLogo } from "../icons/eth-logo";
 
 export const Sidebar = () => {
   const navigate = useNavigate();
   return (
-    <section className="w-full max-w-[24rem] my-4 p-4 flex flex-col justify-between">
+    <section className="w-full max-w-[18rem] my-4 p-4 flex flex-col justify-between">
       {/* TOP PANEL */}
       <div className="flex flex-col gap-4">
         <div className="w-full justify-center flex">
@@ -38,13 +32,13 @@ export const Sidebar = () => {
           <label>Exchange</label>
         </div> */}
 
-        <div
+        {/* <div
           className="sidebar-item backdrop-blur-md bg-white/80"
           onClick={() => navigate("/admin/dashboard/transactions")}
         >
           <ExchangeIcon />
           <label>Transaction</label>
-        </div>
+        </div> */}
       </div>
 
       {/* BOTTOM PANEL */}

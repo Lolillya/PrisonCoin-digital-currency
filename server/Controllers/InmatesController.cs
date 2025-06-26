@@ -23,6 +23,28 @@ public class InmateController : ControllerBase
         _abi = System.IO.File.ReadAllText(abiPath);
     }
 
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterInmate([FromBody] object inmateData)
+    {
+        try
+        {
+            // Log the received data
+            Console.WriteLine($"Received inmate registration data: {System.Text.Json.JsonSerializer.Serialize(inmateData)}");
+            
+            // For now, just return success - you can add your database logic here
+            return Ok(new
+            {
+                message = "Inmate registered successfully",
+                data = inmateData
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error registering inmate: {ex.Message}");
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
     [HttpGet("balance/{address}")]
     public async Task<IActionResult> GetBalance(string address)
     {
@@ -164,7 +186,4 @@ public class InmateController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
-
-
-
 }
