@@ -12,7 +12,7 @@ public class InmateController : ControllerBase
     // DEPLOYED CONTRACT ADDRESS 0x60944c759F5E416005F6f88823A924C7d2EEbE6B
     private readonly string _privateKey = "0xba5da40da9963ef6204d0463a1535b431cb075c7576d817404d3e5823fe09dbd"; // no '0x'
     private readonly string _rpcUrl = "http://host.docker.internal:7545";
-    private readonly string _contractAddress = "0x39CDDD59d9ad0c5F54178Cd6CaE213BaB94E46E5";
+    private readonly string _contractAddress = "0x2cf9eba87A0930a87046E5c4Cfe6ae6E76dd98Dd";
     private readonly string _abi;
 
     private static List<InmateModel> _inmates = new List<InmateModel>();

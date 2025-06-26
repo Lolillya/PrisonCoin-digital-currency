@@ -11,7 +11,7 @@ public class EthTransferController : ControllerBase
 {
     private readonly string _privateKey = "0xba5da40da9963ef6204d0463a1535b431cb075c7576d817404d3e5823fe09dbd";
     private readonly string _rpcUrl = "http://host.docker.internal:7545";
-    private readonly string _contractAddress = "0x0000000000000000000000000000000000000000"; // Update with deployed contract address
+    private readonly string _contractAddress = "0x2cf9eba87A0930a87046E5c4Cfe6ae6E76dd98Dd"; // Update with deployed contract address
     private readonly string _abi;
 
     public EthTransferController()
