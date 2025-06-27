@@ -1,4 +1,27 @@
+import { useState, useEffect } from "react";
+import { getWalletBalance } from "@/api/inmates";
+import { env } from "@/env";
+
 const DashboardPage = () => {
+  const [availableBalance, setAvailableBalance] = useState<any>(0);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const balance = await getWalletBalance(env.TREASURY_WALLET_ADDRESS);
+        setAvailableBalance(balance);
+      } catch (error) {
+        console.error("Error fetching wallet balance:", error);
+        setAvailableBalance(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBalance();
+  }, []);
+  
   const outgoingTransactions = [
     {
       fromAddress: "0x74c8A64dfe3A471B3a0560fA2dF1A8d9ec18E144",
@@ -65,7 +88,7 @@ const DashboardPage = () => {
       <div className="flex gap-1">
         <div className="flex-1 flex flex-col gap-4">
           <h3>Available Balance</h3>
-          <h3>$0.00</h3>
+          <span>{loading ? "Loading..." : `$${availableBalance.ethBalance} ETH`}</span>
         </div>
 
         <div className="flex-1 flex flex-col gap-4">

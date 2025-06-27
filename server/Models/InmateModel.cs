@@ -96,4 +96,18 @@ namespace server.Models
     {
         public decimal Amount { get; set; }
     }
+
+    public class PurchaseItemRequest
+    {
+        public string InmateAddress { get; set; }
+        public string Item { get; set; }
+        public int Cost { get; set; }
+    }
+
+    public class PurchaseItemEthRequest
+    {
+        public string InmateAddress { get; set; }
+        public string Item { get; set; }
+        public decimal AmountInEth { get; set; }
+    }
 }

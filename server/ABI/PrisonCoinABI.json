@@ -319,6 +319,25 @@
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "item",
+        "type": "string"
+      }
+    ],
+    "name": "getItemPriceInEth",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "inmate",
         "type": "address"
@@ -522,6 +541,29 @@
     "name": "purchaseItem",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "inmate",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "item",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "costInEth",
+        "type": "uint256"
+      }
+    ],
+    "name": "purchaseItemWithEth",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
