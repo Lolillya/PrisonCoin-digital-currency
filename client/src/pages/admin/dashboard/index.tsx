@@ -1,11 +1,21 @@
 import { useState, useEffect } from "react";
-import { getWalletBalance } from "@/api/inmates";
+import { getTransactions, getWalletBalance } from "@/api/inmates";
 import { env } from "@/env";
 
 const DashboardPage = () => {
   const [availableBalance, setAvailableBalance] = useState<any>(0);
   const [loading, setLoading] = useState(true);
-  
+  const [transactions, setTransactions] = useState<any>([]);
+
+  console.log(transactions);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const transactions = await getTransactions();
+      setTransactions(transactions);
+    };
+    fetchTransactions();
+  }, []);
   useEffect(() => {
     const fetchBalance = async () => {
       try {
@@ -22,67 +32,6 @@ const DashboardPage = () => {
     fetchBalance();
   }, []);
   
-  const outgoingTransactions = [
-    {
-      fromAddress: "0x74c8A64dfe3A471B3a0560fA2dF1A8d9ec18E144",
-      toAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208C",
-      contractAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208C",
-      gas: 836811,
-      amount: "0.01 ETH",
-    },
-    {
-      fromAddress: "0x74c8A64dfe3A471B3a0560fA2dF1A8d9ec18E145",
-      toAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208D",
-      contractAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208D",
-      gas: 836812,
-      amount: "0.02 ETH",
-    },
-    {
-      fromAddress: "0x74c8A64dfe3A471B3a0560fA2dF1A8d9ec18E146",
-      toAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208E",
-      contractAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208E",
-      gas: 836813,
-      amount: "0.03 ETH",
-    },
-    {
-      fromAddress: "0x74c8A64dfe3A471B3a0560fA2dF1A8d9ec18E147",
-      toAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208F",
-      contractAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208F",
-      gas: 836814,
-      amount: "0.04 ETH",
-    },
-  ];
-
-  const ingoingTransactions = [
-    {
-      fromAddress: "0x74c8A64dfe3A471B3a0560fA2dF1A8d9ec18E144",
-      toAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208C",
-      contractAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208C",
-      gas: 836811,
-      amount: "0.01 ETH",
-    },
-    {
-      fromAddress: "0x74c8A64dfe3A471B3a0560fA2dF1A8d9ec18E145",
-      toAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208D",
-      contractAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208D",
-      gas: 836812,
-      amount: "0.02 ETH",
-    },
-    {
-      fromAddress: "0x74c8A64dfe3A471B3a0560fA2dF1A8d9ec18E146",
-      toAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208E",
-      contractAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208E",
-      gas: 836813,
-      amount: "0.03 ETH",
-    },
-    {
-      fromAddress: "0x74c8A64dfe3A471B3a0560fA2dF1A8d9ec18E147",
-      toAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208F",
-      contractAddress: "0x8dc9854D9187C94f007945279b0d3308e42e208F",
-      gas: 836814,
-      amount: "0.04 ETH",
-    },
-  ];
   return (
     <section className="section-container flex flex-col">
       <div className="flex gap-1">
@@ -103,10 +52,10 @@ const DashboardPage = () => {
       </div>
 
       {/* TRANSACTION PANEL */}
-      <div className="flex-1">
-        <h3>In-going Transactions</h3>
+      <div className="flex-1 overflow-y-hidden">
+        <h3>Transactions</h3>
 
-        <table className="rounded-xl overflow-hidden shadow-md">
+        <table className="rounded-xl overflow-hidden shadow-md border-2 border-gray-200">
           <thead>
             <tr>
               <th>From Address</th>
@@ -116,8 +65,17 @@ const DashboardPage = () => {
               <th>Amount</th>
             </tr>
           </thead>
-          <tbody>
-            {ingoingTransactions.map((tx, index) => (
+          <tbody className="overflow-y-auto">
+            {transactions.transactions.map((tx: any, index: number) => (
+              <tr key={index}>
+                <td className="text-ellipsis max-w-40 overflow-hidden">{tx.from}</td>
+                <td className="text-ellipsis max-w-40 overflow-hidden">{tx.to}</td>
+                <td className="text-ellipsis max-w-40 overflow-hidden">{tx.contractAddress}</td>
+                <td>{tx.gasPrice}</td>
+                <td>{tx.valueInEth}</td>
+              </tr>
+            ))}
+            {/* {ingoingTransactions.map((tx, index) => (
               <tr key={index}>
                 <td className="text-ellipsis max-w-40 overflow-hidden">{tx.fromAddress}</td>
                 <td className="text-ellipsis max-w-40 overflow-hidden">{tx.toAddress}</td>
@@ -125,12 +83,12 @@ const DashboardPage = () => {
                 <td>{tx.gas}</td>
                 <td>{tx.amount}</td>
               </tr>
-            ))}
+            ))} */}
           </tbody>
         </table>
       </div>
 
-      <div className="flex-1">
+      {/* <div className="flex-1">
         <h3>Out-going Transactions</h3>
 
         <table className="rounded-xl overflow-hidden shadow-md">
@@ -155,7 +113,7 @@ const DashboardPage = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
     </section>
   );
 };

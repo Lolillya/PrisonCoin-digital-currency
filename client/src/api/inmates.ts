@@ -89,3 +89,28 @@ export const getWalletBalance = async (walletAddress: string) => {
     throw error;
   }
 };
+
+export const getTransactions = async () => {
+  try {
+    const res = await fetch("http://localhost:5266/api/inmate/all-blockchain-transactions/", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const responseText = await res.text();
+    console.log("Raw response:", responseText);
+
+    if (res.ok) {
+      try {
+        return JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("Failed to parse JSON response:", parseError);
+        throw new Error(`Server returned invalid JSON: ${responseText}`);
+      }
+    } else {
+      // Server returned an error status
+      throw new Error(`Server error ${res.status}: ${responseText}`);
+    }
+  } catch (error) {
+  }
+};
