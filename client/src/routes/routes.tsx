@@ -7,6 +7,7 @@ import ResgisterPage from "../pages/admin/register/index";
 import CheckBalancePage from "../pages/admin/check-balance";
 import TransactionPage from "../pages/admin/transaction";
 import HardwareFingerprintTestPage from "../pages/admin/hardware-fingerprint-test";
+import MarketPage from "@/pages/employee/market";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,11 @@ export const router = createBrowserRouter([
             element: <HardwareFingerprintTestPage />,
           },
         ],
+      },
+
+      {
+        element: <MarketPage />,
+        path: "employee/market/",
       },
     ],
   },

@@ -22,9 +22,9 @@ using server.Models;
 public class InmateController : ControllerBase
 {
     // DEPLOYED CONTRACT ADDRESS 0x60944c759F5E416005F6f88823A924C7d2EEbE6B
-    private readonly string _privateKey = "0xba5da40da9963ef6204d0463a1535b431cb075c7576d817404d3e5823fe09dbd"; // no '0x'
+    private readonly string _privateKey = "0xad7a6581f84c67355bd6c5b7b041d803e8601ea6a8c3b25d421d4d025a014e91"; // no '0x'
     private readonly string _rpcUrl = "http://host.docker.internal:7545";
-    private readonly string _contractAddress = "0xE2bc8b8EB26939F62e5Da6b24BcdAc278E0b256f";
+    private readonly string _contractAddress = "0x45994Ba15599312C341B2e54BABC7eEe645efBdb";
     private readonly string _abi;
 
     private static List<InmateModel> _inmates = new List<InmateModel>();
@@ -975,6 +975,46 @@ public class InmateController : ControllerBase
         catch (Exception ex)
         {
             Console.WriteLine($"Error in GetAvailableItems: {ex.Message}");
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("search-by-fingerprint/{fingerprintHash}")]
+    public IActionResult SearchInmateByFingerprint(string fingerprintHash)
+    {
+        try
+        {
+            Console.WriteLine($"Searching for inmate with fingerprint hash: {fingerprintHash}");
+
+            // Search in the in-memory store (you can replace this with database search)
+            var inmate = _inmates.FirstOrDefault(i => i.FingerprintHash == fingerprintHash);
+
+            if (inmate == null)
+            {
+                Console.WriteLine($"No inmate found with fingerprint hash: {fingerprintHash}");
+                return NotFound(new { error = "Inmate not found" });
+            }
+
+            Console.WriteLine($"Found inmate: {inmate.FullName} (ID: {inmate.InmateNumber})");
+
+            return Ok(new
+            {
+                inmate = new
+                {
+                    id = inmate.Id.ToString(),
+                    inmateNumber = inmate.InmateNumber,
+                    fullName = inmate.FullName,
+                    walletAddress = inmate.WalletAddress,
+                    fingerprintHash = inmate.FingerprintHash,
+                    initialBalance = inmate.InitialBalance,
+                    dailySpendingLimit = inmate.DailySpendingLimit
+                },
+                message = "Inmate found successfully"
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in SearchInmateByFingerprint: {ex.Message}");
             return BadRequest(new { error = ex.Message });
         }
     }

@@ -40,7 +40,7 @@
 
   /* UI */
   main {
-    @apply flex min-h-dvh min-w-dvh relative bg-background;
+    @apply flex min-h-dvh min-w-dvh max-h-screen relative bg-background overflow-y-hidden;
   }
   section {
     @apply flex px-16 py-4  flex-col overflow-y-hidden flex-1;

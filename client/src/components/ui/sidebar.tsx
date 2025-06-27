@@ -5,7 +5,7 @@ import { EthLogo } from "../icons/eth-logo";
 export const Sidebar = () => {
   const navigate = useNavigate();
   return (
-    <section className="w-full max-w-[18rem] my-4 p-4 flex flex-col justify-between">
+    <section className="w-full max-w-[18rem] my-4 p-4 flex flex-col justify-between overflow-y-hidden">
       {/* TOP PANEL */}
       <div className="flex flex-col gap-4">
         <div
