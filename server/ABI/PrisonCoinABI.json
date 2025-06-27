@@ -554,11 +554,6 @@
         "internalType": "string",
         "name": "item",
         "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "costInEth",
-        "type": "uint256"
       }
     ],
     "name": "purchaseItemWithEth",

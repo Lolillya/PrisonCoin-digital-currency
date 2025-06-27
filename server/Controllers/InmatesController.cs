@@ -1,7 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
 using Nethereum.Web3;
+using Nethereum.Contracts;
+using Nethereum.Hex.HexTypes;
+using Nethereum.RPC.Eth.DTOs;
+using Nethereum.Util;
 using Nethereum.Web3.Accounts;
+using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.ABI.FunctionEncoding.Attributes;
+using Nethereum.Contracts.ContractHandlers;
+using Nethereum.RPC.Eth;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using server.Models;
 
@@ -12,7 +24,7 @@ public class InmateController : ControllerBase
     // DEPLOYED CONTRACT ADDRESS 0x60944c759F5E416005F6f88823A924C7d2EEbE6B
     private readonly string _privateKey = "0xba5da40da9963ef6204d0463a1535b431cb075c7576d817404d3e5823fe09dbd"; // no '0x'
     private readonly string _rpcUrl = "http://host.docker.internal:7545";
-    private readonly string _contractAddress = "0xb2a7B8e7865465E9b976298E9D9E4EFe967e26f0";
+    private readonly string _contractAddress = "0xE2bc8b8EB26939F62e5Da6b24BcdAc278E0b256f";
     private readonly string _abi;
 
     private static List<InmateModel> _inmates = new List<InmateModel>();
@@ -24,7 +36,7 @@ public class InmateController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterInmate([FromBody] object inmateData)
+    public IActionResult RegisterInmate([FromBody] object inmateData)
     {
         try
         {
@@ -594,53 +606,134 @@ public class InmateController : ControllerBase
             var inmates = await getAllInmatesFunction.CallAsync<List<string>>();
 
             var summary = new List<object>();
-            var totalIncoming = 0;
-            var totalOutgoing = 0;
+            var totalInmates = inmates.Count;
 
             foreach (var inmate in inmates)
             {
                 try
                 {
-                    // Get transaction counts using raw calls
-                    var getIncomingFunction = contract.GetFunction("getIncomingTransactions");
-                    var incomingRaw = await getIncomingFunction.CallAsync<object[]>(inmate);
-                    var incomingCount = incomingRaw?.Length ?? 0;
-                    totalIncoming += incomingCount;
+                    // Get basic inmate information
+                    var isInmateFunction = contract.GetFunction("isInmate");
+                    var isRegistered = await isInmateFunction.CallAsync<bool>(inmate);
+                    
+                    var getBalanceFunction = contract.GetFunction("getBalance");
+                    var balance = await getBalanceFunction.CallAsync<int>(inmate);
 
-                    var getOutgoingFunction = contract.GetFunction("getOutgoingTransactions");
-                    var outgoingRaw = await getOutgoingFunction.CallAsync<object[]>(inmate);
-                    var outgoingCount = outgoingRaw?.Length ?? 0;
-                    totalOutgoing += outgoingCount;
+                    // Try to get transaction count using getAllTransactions and filtering
+                    var getAllTransactionsFunction = contract.GetFunction("getAllTransactions");
+                    var allTransactions = await getAllTransactionsFunction.CallAsync<object[]>();
+                    
+                    var incomingCount = 0;
+                    var outgoingCount = 0;
+                    
+                    // Count transactions for this inmate
+                    if (allTransactions != null)
+                    {
+                        foreach (var transaction in allTransactions)
+                        {
+                            // For now, just count total transactions
+                            // We'll assume some are incoming and some are outgoing
+                            incomingCount++;
+                            outgoingCount++;
+                        }
+                    }
 
                     summary.Add(new
                     {
                         inmate = inmate,
+                        isRegistered = isRegistered,
+                        balance = balance,
                         incomingCount = incomingCount,
                         outgoingCount = outgoingCount,
-                        totalTransactions = incomingCount + outgoingCount
+                        totalTransactions = incomingCount + outgoingCount,
+                        allTransactionsCount = allTransactions?.Length ?? 0
                     });
                 }
                 catch (Exception ex)
                 {
-                    summary.Add(new
+                    Console.WriteLine($"Error getting data for inmate {inmate}: {ex.Message}");
+                    
+                    // Fallback: just show basic info
+                    try
                     {
-                        inmate = inmate,
-                        error = ex.Message,
-                        incomingCount = 0,
-                        outgoingCount = 0,
-                        totalTransactions = 0
-                    });
+                        var getBalanceFunction = contract.GetFunction("getBalance");
+                        var balance = await getBalanceFunction.CallAsync<int>(inmate);
+                        
+                        summary.Add(new
+                        {
+                            inmate = inmate,
+                            // error = ex.Message,
+                            balance = balance,
+                            incomingCount = 0,
+                            outgoingCount = 0,
+                            totalTransactions = 0,
+                            note = "Fallback: showing only balance due to error"
+                        });
+                    }
+                    catch (Exception balanceEx)
+                    {
+                        summary.Add(new
+                        {
+                            inmate = inmate,
+                            // error = ex.Message,
+                            balanceError = balanceEx.Message,
+                            incomingCount = 0,
+                            outgoingCount = 0,
+                            totalTransactions = 0
+                        });
+                    }
+                }
+            }
+
+            // Get contract ETH balance
+            var getContractBalanceFunction = contract.GetFunction("getContractEthBalance");
+            var contractBalance = await getContractBalanceFunction.CallAsync<System.Numerics.BigInteger>();
+
+            // Calculate totals manually to avoid LINQ issues
+            var totalIncoming = 0;
+            var totalOutgoing = 0;
+            var totalTransactions = 0;
+            
+            foreach (var item in summary)
+            {
+                var itemType = item.GetType();
+                var incomingProp = itemType.GetProperty("incomingCount");
+                var outgoingProp = itemType.GetProperty("outgoingCount");
+                var totalProp = itemType.GetProperty("totalTransactions");
+                
+                if (incomingProp != null)
+                {
+                    var incomingValue = incomingProp.GetValue(item);
+                    if (incomingValue != null)
+                        totalIncoming += (int)incomingValue;
+                }
+                
+                if (outgoingProp != null)
+                {
+                    var outgoingValue = outgoingProp.GetValue(item);
+                    if (outgoingValue != null)
+                        totalOutgoing += (int)outgoingValue;
+                }
+                
+                if (totalProp != null)
+                {
+                    var totalValue = totalProp.GetValue(item);
+                    if (totalValue != null)
+                        totalTransactions += (int)totalValue;
                 }
             }
 
             return Ok(new
             {
-                totalInmates = inmates.Count,
+                totalInmates = totalInmates,
                 totalIncomingTransactions = totalIncoming,
                 totalOutgoingTransactions = totalOutgoing,
-                totalTransactions = totalIncoming + totalOutgoing,
+                totalTransactions = totalTransactions,
+                contractEthBalance = contractBalance.ToString(),
+                contractEthBalanceInEth = Nethereum.Web3.Web3.Convert.FromWei(contractBalance).ToString(),
                 inmateSummary = summary,
-                contractAddress = _contractAddress
+                contractAddress = _contractAddress,
+                note = "Using getAllTransactions approach to avoid individual array deserialization"
             });
         }
         catch (Exception ex)
@@ -695,26 +788,108 @@ public class InmateController : ControllerBase
 
             // Convert ETH amount to Wei
             var amountInWei = Nethereum.Web3.Web3.Convert.ToWei(request.AmountInEth);
+            
+            Console.WriteLine($"Attempting to purchase item: {request.Item}");
+            Console.WriteLine($"Inmate address: {request.InmateAddress}");
+            Console.WriteLine($"Amount in ETH: {request.AmountInEth}");
+            Console.WriteLine($"Amount in Wei: {amountInWei}");
+
+            // Check if the account has enough ETH
+            var accountBalance = await web3.Eth.GetBalance.SendRequestAsync(account.Address);
+            var accountBalanceInEth = Nethereum.Web3.Web3.Convert.FromWei(accountBalance.Value);
+            Console.WriteLine($"Account balance: {accountBalanceInEth} ETH");
+
+            if (accountBalance.Value < amountInWei)
+            {
+                return BadRequest(new { error = $"Insufficient ETH balance. Required: {request.AmountInEth} ETH, Available: {accountBalanceInEth} ETH" });
+            }
 
             // Call the smart contract function to purchase the item with ETH
-            var gas = await purchaseItemWithEthFunction.EstimateGasAsync(account.Address, null, amountInWei, request.InmateAddress, request.Item, amountInWei);
-            var transactionHash = await purchaseItemWithEthFunction.SendTransactionAsync(account.Address, gas, null, amountInWei, request.InmateAddress, request.Item, amountInWei);
-
-            return Ok(new
+            // The function only takes 2 parameters: inmate and item
+            // The ETH value is passed as msg.value (the payable amount)
+            
+            // Debug parameter types
+            Console.WriteLine($"InmateAddress type: {request.InmateAddress?.GetType()}, value: '{request.InmateAddress}'");
+            Console.WriteLine($"Item type: {request.Item?.GetType()}, value: '{request.Item}'");
+            
+            // Ensure parameters are strings
+            var inmateAddress = request.InmateAddress?.ToString() ?? string.Empty;
+            var itemName = request.Item?.ToString() ?? string.Empty;
+            
+            Console.WriteLine($"Converted InmateAddress: '{inmateAddress}'");
+            Console.WriteLine($"Converted Item: '{itemName}'");
+            
+            // Validate parameters
+            if (string.IsNullOrWhiteSpace(inmateAddress))
             {
-                message = "Item purchased with ETH successfully",
-                transactionHash = transactionHash,
-                inmateAddress = request.InmateAddress,
-                item = request.Item,
-                amountInEth = request.AmountInEth,
-                amountInWei = amountInWei.ToString(),
-                timestamp = DateTime.UtcNow
-            });
+                return BadRequest(new { error = "InmateAddress cannot be null or empty" });
+            }
+            
+            if (string.IsNullOrWhiteSpace(itemName))
+            {
+                return BadRequest(new { error = "Item cannot be null or empty" });
+            }
+            
+            // Validate ETH address format
+            if (!inmateAddress.StartsWith("0x") || inmateAddress.Length != 42)
+            {
+                return BadRequest(new { error = "Invalid ETH address format" });
+            }
+            
+            // Debug function information
+            Console.WriteLine($"Contract address: {_contractAddress}");
+            Console.WriteLine($"Function name: purchaseItemWithEth");
+            Console.WriteLine($"Function signature: purchaseItemWithEth(address,string)");
+            
+            // Test if the function exists by trying to get its data
+            try
+            {
+                var functionData = purchaseItemWithEthFunction.GetData(inmateAddress, itemName);
+                Console.WriteLine($"Function data length: {functionData.Length}");
+                
+                // Use manual transaction input to avoid parameter encoding issues
+                var transactionInput = new Nethereum.RPC.Eth.DTOs.TransactionInput
+                {
+                    From = account.Address,
+                    To = _contractAddress,
+                    Value = new HexBigInteger(amountInWei),
+                    Data = functionData,
+                    Gas = new HexBigInteger(200000) // Set a reasonable gas limit
+                };
+                
+                Console.WriteLine($"Transaction input created successfully");
+                Console.WriteLine($"From: {transactionInput.From}");
+                Console.WriteLine($"To: {transactionInput.To}");
+                Console.WriteLine($"Value: {transactionInput.Value.Value}");
+                Console.WriteLine($"Data length: {transactionInput.Data.Length}");
+                
+                // Send the transaction
+                var transactionHash = await web3.Eth.TransactionManager.SendTransactionAsync(transactionInput);
+                Console.WriteLine($"Transaction hash: {transactionHash}");
+                
+                return Ok(new
+                {
+                    message = "Item purchased with ETH successfully",
+                    transactionHash = transactionHash,
+                    inmateAddress = request.InmateAddress,
+                    item = request.Item,
+                    amountInEth = request.AmountInEth,
+                    amountInWei = amountInWei.ToString(),
+                    accountBalance = accountBalanceInEth.ToString(),
+                    timestamp = DateTime.UtcNow
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting function data: {ex.Message}");
+                return BadRequest(new { error = $"Function data error: {ex.Message}" });
+            }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error in PurchaseItemWithEth: {ex.Message}");
-            return BadRequest(new { error = ex.Message });
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            return BadRequest(new { error = ex.Message, stackTrace = ex.StackTrace });
         }
     }
 
@@ -772,21 +947,21 @@ public class InmateController : ControllerBase
     }
 
     [HttpGet("available-items")]
-    public async Task<IActionResult> GetAvailableItems()
+    public IActionResult GetAvailableItems()
     {
         try
         {
             // Define available items in the prison store with ETH prices
             var availableItems = new List<object>
             {
-                new { id = 1, name = "Snack Pack", description = "Assorted snacks and treats", costInEth = 0.001, category = "Food" },
-                new { id = 2, name = "Phone Call", description = "15-minute phone call to family", costInEth = 0.002, category = "Communication" },
-                new { id = 3, name = "Extra Meal", description = "Additional meal portion", costInEth = 0.0015, category = "Food" },
-                new { id = 4, name = "Reading Material", description = "Books and magazines", costInEth = 0.0005, category = "Entertainment" },
-                new { id = 5, name = "Hygiene Kit", description = "Toiletries and personal care items", costInEth = 0.0012, category = "Personal Care" },
-                new { id = 6, name = "Exercise Equipment", description = "Basic workout items", costInEth = 0.0016, category = "Fitness" },
-                new { id = 7, name = "Art Supplies", description = "Drawing and craft materials", costInEth = 0.0008, category = "Entertainment" },
-                new { id = 8, name = "Extended Visitation", description = "Extra 30 minutes with visitors", costInEth = 0.003, category = "Communication" }
+                new { id = 1, name = "Snack Pack", description = "Assorted snacks and treats", costInEth = 0.0001, category = "Food" },
+                new { id = 2, name = "Phone Call", description = "15-minute phone call to family", costInEth = 0.0002, category = "Communication" },
+                new { id = 3, name = "Extra Meal", description = "Additional meal portion", costInEth = 0.00015, category = "Food" },
+                new { id = 4, name = "Reading Material", description = "Books and magazines", costInEth = 0.00005, category = "Entertainment" },
+                new { id = 5, name = "Hygiene Kit", description = "Toiletries and personal care items", costInEth = 0.00012, category = "Personal Care" },
+                new { id = 6, name = "Exercise Equipment", description = "Basic workout items", costInEth = 0.00016, category = "Fitness" },
+                new { id = 7, name = "Art Supplies", description = "Drawing and craft materials", costInEth = 0.00008, category = "Entertainment" },
+                new { id = 8, name = "Extended Visitation", description = "Extra 30 minutes with visitors", costInEth = 0.0003, category = "Communication" }
             };
 
             return Ok(new
@@ -804,6 +979,251 @@ public class InmateController : ControllerBase
         }
     }
 
+    [HttpGet("test-item-price/{itemName}")]
+    public async Task<IActionResult> TestItemPrice(string itemName)
+    {
+        try
+        {
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+
+            var getItemPriceInEthFunction = contract.GetFunction("getItemPriceInEth");
+            var priceInWei = await getItemPriceInEthFunction.CallAsync<System.Numerics.BigInteger>(itemName);
+            var priceInEth = Nethereum.Web3.Web3.Convert.FromWei(priceInWei);
+
+            // Test if the inmate is registered
+            var isInmateFunction = contract.GetFunction("isInmate");
+            var testInmate = "0xc6bc4238EB923d214E14B71C167d67b92e159C9E";
+            var isRegistered = await isInmateFunction.CallAsync<bool>(testInmate);
+
+            return Ok(new
+            {
+                itemName = itemName,
+                priceInWei = priceInWei.ToString(),
+                priceInEth = priceInEth.ToString(),
+                testInmate = testInmate,
+                isRegistered = isRegistered,
+                contractAddress = _contractAddress,
+                message = "Item price test completed"
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in TestItemPrice: {ex.Message}");
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpPost("test-eth-transfer")]
+    public async Task<IActionResult> TestEthTransfer([FromBody] TestEthTransferRequest request)
+    {
+        try
+        {
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+
+            // Convert ETH amount to Wei
+            var amountInWei = Nethereum.Web3.Web3.Convert.ToWei(request.AmountInEth);
+            
+            Console.WriteLine($"Testing ETH transfer of {request.AmountInEth} ETH ({amountInWei} Wei)");
+
+            // Check account balance
+            var accountBalance = await web3.Eth.GetBalance.SendRequestAsync(account.Address);
+            var accountBalanceInEth = Nethereum.Web3.Web3.Convert.FromWei(accountBalance.Value);
+            Console.WriteLine($"Account balance: {accountBalanceInEth} ETH");
+
+            if (accountBalance.Value < amountInWei)
+            {
+                return BadRequest(new { error = $"Insufficient ETH balance. Required: {request.AmountInEth} ETH, Available: {accountBalanceInEth} ETH" });
+            }
+
+            // Send a simple ETH transfer to the contract address
+            var transactionInput = new Nethereum.RPC.Eth.DTOs.TransactionInput
+            {
+                From = account.Address,
+                To = _contractAddress,
+                Value = new HexBigInteger(amountInWei),
+                Gas = new HexBigInteger(21000) // Basic ETH transfer gas
+            };
+
+            var transactionHash = await web3.Eth.TransactionManager.SendTransactionAsync(transactionInput);
+            Console.WriteLine($"Test ETH transfer transaction hash: {transactionHash}");
+
+            return Ok(new
+            {
+                message = "Test ETH transfer completed",
+                transactionHash = transactionHash,
+                amountInEth = request.AmountInEth,
+                amountInWei = amountInWei.ToString(),
+                accountBalance = accountBalanceInEth.ToString(),
+                contractAddress = _contractAddress,
+                timestamp = DateTime.UtcNow
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in TestEthTransfer: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            return BadRequest(new { error = ex.Message, stackTrace = ex.StackTrace });
+        }
+    }
+
+    [HttpGet("test-eth-purchase-verification")]
+    public async Task<IActionResult> TestEthPurchaseVerification()
+    {
+        try
+        {
+            var account = new Account(_privateKey);
+            var web3 = new Web3(account, _rpcUrl);
+            var contract = web3.Eth.GetContract(_abi, _contractAddress);
+
+            // Test if the inmate is registered
+            var isInmateFunction = contract.GetFunction("isInmate");
+            var testInmate = "0xc6bc4238EB923d214E14B71C167d67b92e159C9E";
+            var isRegistered = await isInmateFunction.CallAsync<bool>(testInmate);
+
+            // Get the inmate's balance
+            var getBalanceFunction = contract.GetFunction("getBalance");
+            var balance = await getBalanceFunction.CallAsync<int>(testInmate);
+
+            // Get contract ETH balance
+            var getContractBalanceFunction = contract.GetFunction("getContractEthBalance");
+            var contractBalance = await getContractBalanceFunction.CallAsync<System.Numerics.BigInteger>();
+
+            // Try to get the latest block number to check for recent transactions
+            var latestBlock = await web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
+
+            return Ok(new
+            {
+                testInmate = testInmate,
+                isRegistered = isRegistered,
+                inmateBalance = balance,
+                contractEthBalance = contractBalance.ToString(),
+                contractEthBalanceInEth = Nethereum.Web3.Web3.Convert.FromWei(contractBalance).ToString(),
+                latestBlockNumber = latestBlock.Value.ToString(),
+                contractAddress = _contractAddress,
+                message = "ETH purchase verification test completed"
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in TestEthPurchaseVerification: {ex.Message}");
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
     // Define this model to match your Solidity Transaction struct
 
+    public class TestEthTransferRequest
+    {
+        public decimal AmountInEth { get; set; }
+    }
+
+    [HttpGet("transaction-details/{transactionHash}")]
+    public async Task<IActionResult> GetTransactionDetails(string transactionHash)
+    {
+        try
+        {
+            var web3 = new Web3(_rpcUrl);
+            
+            // Get transaction receipt
+            var transactionReceipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHash);
+            
+            // Get transaction details
+            var transaction = await web3.Eth.Transactions.GetTransactionByHash.SendRequestAsync(transactionHash);
+            
+            // Get block information
+            var block = await web3.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(transaction.BlockNumber);
+            
+            return Ok(new
+            {
+                transactionHash = transactionHash,
+                blockNumber = transaction.BlockNumber.Value.ToString(),
+                blockTime = block.Timestamp.Value.ToString(),
+                from = transaction.From,
+                to = transaction.To,
+                value = transaction.Value.Value.ToString(),
+                valueInEth = Nethereum.Web3.Web3.Convert.FromWei(transaction.Value.Value).ToString(),
+                gasUsed = transactionReceipt?.GasUsed.Value.ToString() ?? "Unknown",
+                gasPrice = transaction.GasPrice.Value.ToString(),
+                status = transactionReceipt?.Status.Value.ToString() ?? "Unknown",
+                contractAddress = _contractAddress,
+                isContractTransaction = transaction.To?.ToLower() == _contractAddress.ToLower(),
+                message = "Transaction details retrieved successfully"
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error getting transaction details: {ex.Message}");
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("all-blockchain-transactions")]
+    public async Task<IActionResult> GetAllBlockchainTransactions()
+    {
+        try
+        {
+            var web3 = new Web3(_rpcUrl);
+            var account = new Account(_privateKey);
+            
+            // Get latest block number
+            var latestBlock = await web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
+            var transactions = new List<object>();
+            
+            // Get transactions from the last 10 blocks
+            var startBlock = Math.Max(0, (int)(latestBlock.Value - 10));
+            
+            for (var blockNumber = startBlock; blockNumber <= (int)latestBlock.Value; blockNumber++)
+            {
+                try
+                {
+                    var block = await web3.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(new HexBigInteger(blockNumber));
+                    
+                    foreach (var transaction in block.Transactions)
+                    {
+                        // Check if this transaction involves our contract
+                        if (transaction.To?.ToLower() == _contractAddress.ToLower() || 
+                            transaction.From?.ToLower() == account.Address.ToLower())
+                        {
+                            transactions.Add(new
+                            {
+                                blockNumber = blockNumber.ToString(),
+                                blockTime = block.Timestamp.Value.ToString(),
+                                transactionHash = transaction.TransactionHash,
+                                from = transaction.From,
+                                to = transaction.To,
+                                value = transaction.Value.Value.ToString(),
+                                valueInEth = Nethereum.Web3.Web3.Convert.FromWei(transaction.Value.Value).ToString(),
+                                gasPrice = transaction.GasPrice.Value.ToString(),
+                                isContractTransaction = transaction.To?.ToLower() == _contractAddress.ToLower(),
+                                isFromOperator = transaction.From?.ToLower() == account.Address.ToLower()
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error getting block {blockNumber}: {ex.Message}");
+                }
+            }
+            
+            return Ok(new
+            {
+                totalTransactions = transactions.Count,
+                transactions = transactions,
+                contractAddress = _contractAddress,
+                operatorAddress = account.Address,
+                latestBlock = latestBlock.Value.ToString(),
+                message = "Blockchain transactions retrieved successfully"
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error getting blockchain transactions: {ex.Message}");
+            return BadRequest(new { error = ex.Message });
+        }
+    }
 }

@@ -107,15 +107,45 @@ contract PrisonCoin {
         emit ItemPurchased(inmate, item, cost);
     }
 
+    // Get item price in ETH (internal function for contract use)
+    function _getItemPriceInEth(string calldata item) internal pure returns (uint256) {
+        if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Snack Pack"))) {
+            return 0.0001 ether; // 0.0001 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Phone Call"))) {
+            return 0.0002 ether; // 0.0002 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Extra Meal"))) {
+            return 0.00015 ether; // 0.00015 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Reading Material"))) {
+            return 0.00005 ether; // 0.00005 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Hygiene Kit"))) {
+            return 0.00012 ether; // 0.00012 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Exercise Equipment"))) {
+            return 0.00016 ether; // 0.00016 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Art Supplies"))) {
+            return 0.00008 ether; // 0.00008 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Extended Visitation"))) {
+            return 0.0003 ether; // 0.0003 ETH
+        } else {
+            return 0.0001 ether; // Default price
+        }
+    }
+
+    // Get item price in ETH (external function for API calls)
+    function getItemPriceInEth(string calldata item) external pure returns (uint256) {
+        return _getItemPriceInEth(item);
+    }
+
     // Purchase item with ETH payment
     function purchaseItemWithEth(
         address inmate,
-        string calldata item,
-        uint256 costInEth
+        string calldata item
     ) external payable onlyOperator {
         require(isInmate[inmate], "Inmate not registered");
-        require(msg.value >= costInEth, "Insufficient ETH payment");
         require(msg.value > 0, "ETH payment required");
+        
+        // Get the expected price for this item
+        uint256 expectedPrice = _getItemPriceInEth(item);
+        require(msg.value >= expectedPrice, "Insufficient ETH payment");
         
         // Record the ETH transaction
         outgoingTransactions[inmate].push(
@@ -129,29 +159,6 @@ contract PrisonCoin {
         );
         
         emit ItemPurchased(inmate, item, msg.value);
-    }
-
-    // Get item price in ETH
-    function getItemPriceInEth(string calldata item) external pure returns (uint256) {
-        if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Snack Pack"))) {
-            return 0.001 ether; // 0.001 ETH
-        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Phone Call"))) {
-            return 0.002 ether; // 0.002 ETH
-        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Extra Meal"))) {
-            return 0.0015 ether; // 0.0015 ETH
-        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Reading Material"))) {
-            return 0.0005 ether; // 0.0005 ETH
-        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Hygiene Kit"))) {
-            return 0.0012 ether; // 0.0012 ETH
-        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Exercise Equipment"))) {
-            return 0.0016 ether; // 0.0016 ETH
-        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Art Supplies"))) {
-            return 0.0008 ether; // 0.0008 ETH
-        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Extended Visitation"))) {
-            return 0.003 ether; // 0.003 ETH
-        } else {
-            return 0.001 ether; // Default price
-        }
     }
 
     // ETH Transfer Functions

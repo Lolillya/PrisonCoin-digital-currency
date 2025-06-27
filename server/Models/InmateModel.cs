@@ -39,13 +39,13 @@ namespace server.Models
     public class TransactionModel
     {
         [Parameter("address", "from", 1)]
-        public string From { get; set; }
+        public string From { get; set; } = string.Empty;
         
         [Parameter("address", "to", 2)]
-        public string To { get; set; }
+        public string To { get; set; } = string.Empty;
         
         [Parameter("string", "item", 3)]
-        public string Item { get; set; }
+        public string Item { get; set; } = string.Empty;
         
         [Parameter("uint256", "amount", 4)]
         public BigInteger Amount { get; set; }
@@ -58,7 +58,7 @@ namespace server.Models
     public class PaginatedTransactionsResult
     {
         [Parameter("tuple[]", "transactions", 1)]
-        public List<TransactionModel> Transactions { get; set; }
+        public List<TransactionModel> Transactions { get; set; } = new();
         
         [Parameter("uint256", "totalCount", 2)]
         public BigInteger TotalCount { get; set; }
@@ -68,27 +68,27 @@ namespace server.Models
     public class AllTransactionsResult
     {
         [Parameter("tuple[]", "transactions", 1)]
-        public List<TransactionModel> Transactions { get; set; }
+        public List<TransactionModel> Transactions { get; set; } = new();
     }
 
     // ETH Transfer Request Models
     public class TransferEthRequest
     {
-        public string ToAddress { get; set; }
+        public required string ToAddress { get; set; }
         public decimal Amount { get; set; }
-        public string Reason { get; set; }
+        public required string Reason { get; set; }
     }
 
     public class TransferEthBatchRequest
     {
-        public List<string> Recipients { get; set; }
-        public List<decimal> Amounts { get; set; }
-        public string Reason { get; set; }
+        public required List<string> Recipients { get; set; }
+        public required List<decimal> Amounts { get; set; }
+        public required string Reason { get; set; }
     }
 
     public class WithdrawEthRequest
     {
-        public string ToAddress { get; set; }
+        public required string ToAddress { get; set; }
         public decimal Amount { get; set; }
     }
 
@@ -99,15 +99,15 @@ namespace server.Models
 
     public class PurchaseItemRequest
     {
-        public string InmateAddress { get; set; }
-        public string Item { get; set; }
+        public required string InmateAddress { get; set; }
+        public required string Item { get; set; }
         public int Cost { get; set; }
     }
 
     public class PurchaseItemEthRequest
     {
-        public string InmateAddress { get; set; }
-        public string Item { get; set; }
+        public required string InmateAddress { get; set; }
+        public required string Item { get; set; }
         public decimal AmountInEth { get; set; }
     }
 }
