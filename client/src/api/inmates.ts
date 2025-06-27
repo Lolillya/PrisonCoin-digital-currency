@@ -90,7 +90,7 @@ export const getWalletBalance = async (walletAddress: string) => {
   }
 };
 
-export const getTransactions = async () => {
+export const getAllBlockchainTransactions = async () => {
   try {
     const res = await fetch("http://localhost:5266/api/inmate/all-blockchain-transactions/", {
       method: "GET",
@@ -112,5 +112,7 @@ export const getTransactions = async () => {
       throw new Error(`Server error ${res.status}: ${responseText}`);
     }
   } catch (error) {
+    console.error("Error fetching transactions:", error);
+    throw error;
   }
 };
