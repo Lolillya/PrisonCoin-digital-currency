@@ -107,6 +107,53 @@ contract PrisonCoin {
         emit ItemPurchased(inmate, item, cost);
     }
 
+    // Purchase item with ETH payment
+    function purchaseItemWithEth(
+        address inmate,
+        string calldata item,
+        uint256 costInEth
+    ) external payable onlyOperator {
+        require(isInmate[inmate], "Inmate not registered");
+        require(msg.value >= costInEth, "Insufficient ETH payment");
+        require(msg.value > 0, "ETH payment required");
+        
+        // Record the ETH transaction
+        outgoingTransactions[inmate].push(
+            Transaction({
+                from: inmate,
+                to: msg.sender,
+                item: item,
+                amount: msg.value,
+                timestamp: block.timestamp
+            })
+        );
+        
+        emit ItemPurchased(inmate, item, msg.value);
+    }
+
+    // Get item price in ETH
+    function getItemPriceInEth(string calldata item) external pure returns (uint256) {
+        if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Snack Pack"))) {
+            return 0.001 ether; // 0.001 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Phone Call"))) {
+            return 0.002 ether; // 0.002 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Extra Meal"))) {
+            return 0.0015 ether; // 0.0015 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Reading Material"))) {
+            return 0.0005 ether; // 0.0005 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Hygiene Kit"))) {
+            return 0.0012 ether; // 0.0012 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Exercise Equipment"))) {
+            return 0.0016 ether; // 0.0016 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Art Supplies"))) {
+            return 0.0008 ether; // 0.0008 ETH
+        } else if (keccak256(abi.encodePacked(item)) == keccak256(abi.encodePacked("Extended Visitation"))) {
+            return 0.003 ether; // 0.003 ETH
+        } else {
+            return 0.001 ether; // Default price
+        }
+    }
+
     // ETH Transfer Functions
 
     // Transfer ETH to a single address
