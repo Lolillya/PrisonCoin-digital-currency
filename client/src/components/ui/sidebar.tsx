@@ -30,6 +30,14 @@ export const Sidebar = () => {
           <label>Check Account</label>
         </div>
 
+        <div
+          className="sidebar-item backdrop-blur-md bg-white/80"
+          onClick={() => navigate("/admin/dashboard/transfer-funds")}
+        >
+          <CoinsIcon />
+          <label>Transfer Funds</label>
+        </div>
+
         {/* <div className="sidebar-item backdrop-blur-md bg-white/80">
           <HandCoinsIcon />
           <label>Exchange</label>
