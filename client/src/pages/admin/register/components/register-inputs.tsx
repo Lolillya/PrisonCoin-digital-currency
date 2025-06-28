@@ -599,16 +599,16 @@ const RegisterStep3 = ({
           <h2>Biometric Enrollment</h2>
         </div>
 
-        <div className="flex flex-col gap-6 w-full flex-1 justify-between pt-5">
+        <div className="flex flex-col gap-6 w-full flex-1 justify-between pt-5 overflow-y-scroll">  
           <div className="flex flex-col items-center justify-center gap-6">
             <div
-              className={`text-white relative group flex w-fit p-4 rounded-full shadow-lg transition-all duration-300 ${
+              className={`text-white items-center gap-4 relative group flex w-fit p-4 rounded-full shadow-lg transition-all duration-300 ${
                 isScanComplete ? "bg-green-500" : "bg-primary"
               }`}
             >
-              <FingerprintIcon width={150} height={150} />
+              <FingerprintIcon width={50} height={50} />
+              <h3 className="text-white/80">Register Inmate Fingerprint</h3>
             </div>
-            <h3>Register Inmate Fingerprint</h3>
             <p className="text-center text-sm text-text/70 max-w-md mt-2">
               This step registers the inmate's fingerprint using the hardware scanner for secure
               identification. The fingerprint data will be stored securely for future
@@ -812,6 +812,11 @@ const RegisterStep5 = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [registrationDetails, setRegistrationDetails] = useState<{
+    database: any;
+    blockchain: any;
+    transactionHash: string;
+  } | null>(null);
 
   const handleConfirmRegistration = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -821,7 +826,7 @@ const RegisterStep5 = ({
     try {
       // Map the frontend data to the backend expected format
       const registrationData = {
-        InmateNumber: inmateData.inmateId || `INMATE_001`,
+        InmateNumber: inmateData.inmateId || `INMATE_${Date.now()}`,
         FullName: `${inmateData.firstName || ""} ${inmateData.lastName || ""}`.trim(),
         Address: inmateData.address || "",
         Height: parseFloat(inmateData.height) || 0,
@@ -839,11 +844,12 @@ const RegisterStep5 = ({
 
       console.log("🚀 Submitting inmate registration data:", registrationData);
 
-      // Call the API to register the inmate
+      // Call the API to register the inmate (both database and blockchain)
       const response = await registerInmate(registrationData);
 
       console.log("✅ Registration successful:", response);
       setSubmitSuccess(true);
+      setRegistrationDetails(response);
 
       // Call the original onContinue to proceed to completion
       onContinue(e);
@@ -945,7 +951,41 @@ const RegisterStep5 = ({
           )}
 
           {/* Success Display */}
-          {submitSuccess && (
+          {submitSuccess && registrationDetails && (
+            <div className="bg-green-500/20 p-4 rounded-lg border border-green-500/30">
+              <h4 className="font-semibold mb-2 text-green-500">✓ Registration Successful</h4>
+              <div className="space-y-2 text-sm text-text/70">
+                <p>Inmate has been registered in both database and blockchain.</p>
+                
+                {/* Database Registration Details */}
+                <div className="bg-background/20 p-3 rounded">
+                  <h5 className="font-medium text-green-500 mb-1">📊 Database Registration</h5>
+                  <p><strong>Status:</strong> ✅ Success</p>
+                  <p><strong>Inmate ID:</strong> {registrationDetails.database?.inmateNumber}</p>
+                  <p><strong>Database ID:</strong> {registrationDetails.database?.id}</p>
+                </div>
+
+                {/* Blockchain Registration Details */}
+                <div className="bg-background/20 p-3 rounded">
+                  <h5 className="font-medium text-green-500 mb-1">⛓️ Blockchain Registration</h5>
+                  <p><strong>Status:</strong> ✅ Success</p>
+                  <p><strong>Transaction Hash:</strong> 
+                    <span className="font-mono text-xs break-all ml-1">
+                      {registrationDetails.transactionHash}
+                    </span>
+                  </p>
+                  <p><strong>Wallet Address:</strong> 
+                    <span className="font-mono text-xs break-all ml-1">
+                      {registrationDetails.blockchain?.inmate?.walletAddress}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Legacy Success Display (fallback) */}
+          {submitSuccess && !registrationDetails && (
             <div className="bg-green-500/20 p-4 rounded-lg border border-green-500/30">
               <h4 className="font-semibold mb-2 text-green-500">✓ Registration Submitted</h4>
               <p className="text-sm text-text/70">
@@ -962,7 +1002,7 @@ const RegisterStep5 = ({
             disabled={isSubmitting}
             className={isSubmitting ? "opacity-50 cursor-not-allowed" : ""}
           >
-            {isSubmitting ? "Submitting..." : "Confirm Registration"}
+            {isSubmitting ? "Registering..." : "Confirm Registration"}
           </Button>
         </div>
       </div>
