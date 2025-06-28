@@ -42,7 +42,13 @@ const TransferFundsPage = () => {
     }
 
     // Validate amount
-    
+    if (formData.amount <= 0) {
+      errors.amount = "Amount must be greater than 0";
+    } else if (!validateAmount(formData.amount)) {
+      errors.amount = "Amount must be between 0 and 1000 ETH";
+    } else if (balance && parseFloat(balance.toString()) < formData.amount) {
+      errors.amount = "Insufficient treasury balance";
+    }
 
     // Validate reason
     if (!formData.reason.trim()) {
